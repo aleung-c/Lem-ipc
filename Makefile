@@ -21,7 +21,8 @@ src/lemipc.c \
 src/get_game_args.c \
 src/init_board.c \
 src/init_display.c \
-src/init_players.c
+src/init_players.c \
+src/board_tools.c
 
 OBJ = $(SRC:.c=.o)
 

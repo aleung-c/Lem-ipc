@@ -14,5 +14,10 @@
 
 char	get_board_value(char *board, int x, int y)
 {
-	return (board->map[y * x]);
+	return (board[(y * BOARD_WIDTH) + x]);
+}
+
+void	set_board_value(char *board, int x, int y, char val)
+{
+	board[(y * BOARD_WIDTH) + x] = val;
 }

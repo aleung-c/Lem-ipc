@@ -32,10 +32,12 @@ void	init_players(t_lemipc *lemipc)
 			{
 				if (lemipc->pid == 0) 
 				{
+					srand(player_i);
 					ft_putstr("Child process:\n");
 					init_cur_player(lemipc, team_i + 1, player_i + 1);
+					sleep(5);
 				}
-				else 
+				else
 				{
 					// Parent process
 					ft_putstr("Parent process\n");
@@ -57,11 +59,31 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 {
 	lemipc->player.team = team;
 	lemipc->player.nb = nb;
+	lemipc->player.pos.x = rand() % BOARD_WIDTH;
+	lemipc->player.pos.y = rand() % BOARD_WIDTH;
 
-	ft_putendl("player joined:");
+	// TODO: not working for the parent starter process;
+	if (getpid() != lemipc->starter_pid)
+	{
+		// in child, reattach map;
+		lemipc->shm_id = shmget(SHM_MAP_KEY,
+		sizeof(char) * (BOARD_WIDTH * BOARD_HEIGHT), IPC_CREAT | 0666);
+
+		// Attach the segment
+		if ((lemipc->map = shmat(lemipc->shm_id, NULL, 0)) == (char *) -1)
+		{
+			perror("shmat");
+			exit(1);
+		}
+	}
+	// TODO: block sh segment with semaphore.
+	set_board_value(lemipc->map, lemipc->player.pos.x, lemipc->player.pos.y, 48 + lemipc->player.nb);
+
+	ft_putendl(KGRN "player joined:" KRESET);
 	ft_putstr("team ");
 	ft_putnbr(lemipc->player.team);
 	ft_putstr("\nnumber ");
 	ft_putnbr(lemipc->player.nb);
+	ft_putchar('\n');
 	ft_putchar('\n');
 }

@@ -30,14 +30,19 @@ void	lemipc(int argc, char **argv)
 	init_board(&lemipc);
 
 	lemipc.starter_pid = getpid();
+	//srand(12);
 	init_players(&lemipc);
 
 	if (getpid() == lemipc.starter_pid)
 	{
 		init_display(&lemipc);
 
-		display_game_board(&lemipc);
-		sleep(3);
+		while (1)
+		{
+			display_game_board(&lemipc);
+			// sleep(1);
+		}
 		end_display(&lemipc);
 	}
+	ft_putstr("hello child\n");
 }

@@ -14,8 +14,6 @@
 #ifndef LEMIPC_H
 # define LEMIPC_H
 
-# include <unistd.h>
-# include <sys/types.h>
 # include <sys/ipc.h>
 # include <sys/shm.h>
 # include <stdio.h>
@@ -63,10 +61,17 @@ union semun
 ** ----- Program structs
 */
 
+typedef struct				s_vec2
+{
+	int						x;
+	int						y;
+}							t_vec2;
+
 typedef struct				s_player
 {
 	int						team;
 	int						nb;
+	t_vec2					pos;
 }							t_player;
 
 typedef struct				s_lemipc
@@ -116,5 +121,6 @@ void						end_display(t_lemipc *lemipc);
 */
 
 char						get_board_value(char *board, int x, int y);
+void						set_board_value(char *board, int x, int y, char val);
 
 #endif
