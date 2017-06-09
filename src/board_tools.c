@@ -1,24 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   board_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aleung-c <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/08 16:03:48 by aleung-c          #+#    #+#             */
-/*   Updated: 2017/06/08 16:03:50 by aleung-c         ###   ########.fr       */
+/*   Created: 2017/06/09 12:14:56 by aleung-c          #+#    #+#             */
+/*   Updated: 2017/06/09 12:14:57 by aleung-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/lemipc.h"
 
-int		main(int argc, char **argv)
+char	get_board_value(char *board, int x, int y)
 {
-	if (argc != 3)
-	{
-		ft_putendl(KRED "Usage: ./lemipc [nb_team] [nb_player_per_team]" KRESET);
-		exit(-1);
-	}
-	lemipc(argc, argv);
-	return (0);
+	return (board->map[y * x]);
 }

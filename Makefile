@@ -17,7 +17,11 @@ NAME = lemipc
 HEADER = includes/lem-ipc.h
 
 SRC = src/main.c \
-src/lemipc.c
+src/lemipc.c \
+src/get_game_args.c \
+src/init_board.c \
+src/init_display.c \
+src/init_players.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -28,7 +32,7 @@ CC = gcc -g -Wall -Werror -Wextra -Ofast
 all : Lib $(NAME) 
 
 $(NAME) : $(OBJ)
-	$(CC) -o $(NAME) $(OBJ) -L./libft/ -lft
+	$(CC) -o $(NAME) $(OBJ) -L./libft/ -lft -lncurses
 
 Lib :
 	make -C $(LIB)
