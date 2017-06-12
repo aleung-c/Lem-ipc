@@ -16,6 +16,7 @@
 
 # include <sys/ipc.h>
 # include <sys/shm.h>
+# include <sys/sem.h>
 # include <stdio.h> //
 # include <errno.h>
 # include <curses.h>
@@ -40,15 +41,15 @@
 **	Semaphore lib union define
 */
 
-# if !defined(__GNU_LIBRARY__) || defined(_SEM_SEMUN_UNDEFINED)
-union semun
-{
-	int val; // value for SETVAL
-	struct semid_ds* buf; // buffer for IPC_STAT, IPC_SET
-	unsigned short* array; // array for GETALL, SETALL
-	struct seminfo* __buf; // buffer for IPC_INFO
-};
-# endif
+// # if !defined(__GNU_LIBRARY__) || defined(_SEM_SEMUN_UNDEFINED)
+// union semun
+// {
+// 	int val; // value for SETVAL
+// 	struct semid_ds* buf; // buffer for IPC_STAT, IPC_SET
+// 	unsigned short* array; // array for GETALL, SETALL
+// 	struct seminfo* __buf; // buffer for IPC_INFO
+// };
+// # endif
 
 /*
 ** ----- Game defines
@@ -85,11 +86,13 @@ typedef struct				s_player
 
 typedef struct				s_lemipc
 {
+	int						is_parent;
 	int						nb_team;
 	int						nb_player_per_team;
 
 	int						shm_id;
 	char					*map;
+	int						sem_id;
 
 	t_player				player;
 
@@ -141,5 +144,13 @@ void						set_move_modifiers(int *x_move, int *y_move,
 char						get_board_value(char *board, int x, int y);
 void						set_board_value(char *board, int x, int y,
 								char val);
+
+/*
+**	Semaphore handling.
+*/
+
+void						lock_semaphore(int sem_id, int sem);
+void						unlock_semaphore(int sem_id, int sem);
+
 
 #endif

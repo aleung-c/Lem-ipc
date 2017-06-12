@@ -21,6 +21,8 @@ void	lemipc(int argc, char **argv)
 
 	get_game_args(&lemipc, argc, argv);
 	
+	// TODO : protect against less cases than players.
+
 	ft_putendl("Game datas:");
 	ft_putnbr(lemipc.nb_team);
 	ft_putendl(" teams");
@@ -33,8 +35,8 @@ void	lemipc(int argc, char **argv)
 	//srand(12);
 	init_players(&lemipc);
 	// forked from here.
-	sleep(2);
-	if (getpid() == lemipc.starter_pid)
+	sleep(3);
+	if (lemipc.is_parent == 1)
 	{
 		init_display(&lemipc);
 
@@ -46,5 +48,6 @@ void	lemipc(int argc, char **argv)
 		}
 		end_display(&lemipc);
 	}
+	sig_handler(SIGINT);
 	// ft_putstr("hello child\n");
 }

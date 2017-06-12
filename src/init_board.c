@@ -34,6 +34,9 @@ void	init_board(t_lemipc *lemipc)
 		exit(1);
 	}
 	clear_board(lemipc->map);
+
+	// Init semaphore
+	lemipc->sem_id = semget(IPC_PRIVATE, 1, SHM_R | SHM_W);
 }
 
 /*

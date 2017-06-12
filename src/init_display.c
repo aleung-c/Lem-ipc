@@ -45,7 +45,7 @@ void		display_game_board(t_lemipc *lemipc)
 
 	x = 0;
 	y = 0;
-	end_y = BOARD_HEIGHT - 1;
+	end_y = BOARD_HEIGHT - 1; // map goes from 0 to 19
 	getmaxyx(stdscr, max_x, max_y);
 	if (max_x < BOARD_WIDTH || max_y < BOARD_HEIGHT)
 	{
