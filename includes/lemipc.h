@@ -16,9 +16,10 @@
 
 # include <sys/ipc.h>
 # include <sys/shm.h>
-# include <stdio.h>
+# include <stdio.h> //
 # include <errno.h>
 # include <curses.h>
+# include <time.h>
 # include "../libft/libft.h"
 
 /*
@@ -56,6 +57,14 @@ union semun
 # define BOARD_WIDTH 20
 # define BOARD_HEIGHT 20
 # define SHM_MAP_KEY 4242
+
+typedef enum				e_dir
+{
+							UP,
+							RIGHT,
+							DOWN,
+							LEFT
+}							t_dir;
 
 /*
 ** ----- Program structs
@@ -96,6 +105,7 @@ typedef struct				s_lemipc
 **	----- Functions prototypes.
 */
 
+void						sig_handler(int signo);
 
 void						lemipc();
 
@@ -117,10 +127,19 @@ void						display_game_board(t_lemipc *lemipc);
 void						end_display(t_lemipc *lemipc);
 
 /*
+**	Game commands
+*/
+
+void						move_in_dir(t_player *player, char *map, t_dir dir);
+void						set_move_modifiers(int *x_move, int *y_move,
+								t_dir dir);
+
+/*
 **	Board tools - board_tools.c
 */
 
 char						get_board_value(char *board, int x, int y);
-void						set_board_value(char *board, int x, int y, char val);
+void						set_board_value(char *board, int x, int y,
+								char val);
 
 #endif

@@ -20,8 +20,9 @@ void	init_players(t_lemipc *lemipc)
 	team_i = 0;
 	player_i = 1;
 	// set start player ids
-	lemipc->player.team = 1;
+	lemipc->player.team = 0;
 	lemipc->player.nb = 1;
+	srand(time(NULL));
 	init_cur_player(lemipc, 1, 1);
 	while (team_i < lemipc->nb_team)
 	{
@@ -32,15 +33,22 @@ void	init_players(t_lemipc *lemipc)
 			{
 				if (lemipc->pid == 0) 
 				{
-					srand(player_i);
-					ft_putstr("Child process:\n");
+					srand(time(NULL) + team_i + player_i);
+					// ft_putstr("Child process:\n");
 					init_cur_player(lemipc, team_i + 1, player_i + 1);
-					sleep(5);
+					// sleep(5);
+
+					// while (1)
+					// {
+					// 	sleep(2);
+					// 	move_in_dir(&lemipc->player, lemipc->map, RIGHT);	
+					// }
+					// shmdt(lemipc->map);
 				}
 				else
 				{
 					// Parent process
-					ft_putstr("Parent process\n");
+					// ft_putstr("Parent process\n");
 				}
 			}
 			else // fork failed
@@ -60,22 +68,31 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 	lemipc->player.team = team;
 	lemipc->player.nb = nb;
 	lemipc->player.pos.x = rand() % BOARD_WIDTH;
-	lemipc->player.pos.y = rand() % BOARD_WIDTH;
+	lemipc->player.pos.y = rand() % BOARD_HEIGHT;
+
+	// printf("initing player #%d team #%d\n",
+		// lemipc->player.nb, lemipc->player.team);
 
 	// TODO: not working for the parent starter process;
-	if (getpid() != lemipc->starter_pid)
-	{
-		// in child, reattach map;
-		lemipc->shm_id = shmget(SHM_MAP_KEY,
-		sizeof(char) * (BOARD_WIDTH * BOARD_HEIGHT), IPC_CREAT | 0666);
+	// if (getpid() != lemipc->starter_pid)
+	// {
+		// // in child, reattach map;
+		// lemipc->shm_id = shmget(SHM_MAP_KEY,
+		// sizeof(char) * (BOARD_WIDTH * BOARD_HEIGHT), 0666);
 
-		// Attach the segment
-		if ((lemipc->map = shmat(lemipc->shm_id, NULL, 0)) == (char *) -1)
-		{
-			perror("shmat");
-			exit(1);
-		}
-	}
+		// if (lemipc->shm_id < 0)
+		// {
+		// 	perror("init_cur_player: shmget");
+		// 	exit(1);
+		// }
+
+		// // Attach the segment
+		// if ((lemipc->map = shmat(lemipc->shm_id, NULL, 0)) == (char *) -1)
+		// {
+		// 	perror("init_cur_player: shmat");
+		// 	exit(1);
+		// }
+	// }
 	// TODO: block sh segment with semaphore.
 	set_board_value(lemipc->map, lemipc->player.pos.x, lemipc->player.pos.y, 48 + lemipc->player.nb);
 
@@ -84,6 +101,7 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 	ft_putnbr(lemipc->player.team);
 	ft_putstr("\nnumber ");
 	ft_putnbr(lemipc->player.nb);
+	printf("pos = %dx %dy\n", lemipc->player.pos.x, lemipc->player.pos.y);
 	ft_putchar('\n');
 	ft_putchar('\n');
 }

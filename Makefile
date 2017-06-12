@@ -22,7 +22,8 @@ src/get_game_args.c \
 src/init_board.c \
 src/init_display.c \
 src/init_players.c \
-src/board_tools.c
+src/board_tools.c \
+src/game_commands.c
 
 OBJ = $(SRC:.c=.o)
 

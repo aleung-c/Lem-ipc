@@ -31,17 +31,48 @@ void	init_display(t_lemipc *lemipc)
 	}
 }
 
+/*
+**	Main drawing function. Used in the ever running loop.
+*/
 
 void		display_game_board(t_lemipc *lemipc)
 {
-	int		i;
+	static int			max_x;
+	static int			max_y;
+	int					x;
+	int					y;
+	int					end_y;
 
-	i = 0;
-	while (i != (BOARD_HEIGHT * BOARD_WIDTH))
+	x = 0;
+	y = 0;
+	end_y = BOARD_HEIGHT - 1;
+	getmaxyx(stdscr, max_x, max_y);
+	if (max_x < BOARD_WIDTH || max_y < BOARD_HEIGHT)
 	{
-		mvwaddch(lemipc->mainwin, i / BOARD_HEIGHT, i % BOARD_HEIGHT, lemipc->map[i]);
-		i++;
+		endwin();
+		ft_putstr(KRED "Shellscreen too small! Resize please!\n" KRESET);
+		exit(-1);
 	}
+	clear();
+
+	while (y != BOARD_HEIGHT)
+	{
+		while (x != BOARD_WIDTH)
+		{
+			mvwaddch(lemipc->mainwin, y, x, lemipc->map[(end_y * BOARD_WIDTH) + x]);
+			x++;
+		}
+		y++;
+		end_y--;
+		x = 0;
+	}
+
+	// while (i != -1)
+	// {
+	// 	mvwaddch(lemipc->mainwin, i / BOARD_WIDTH, i % BOARD_WIDTH, lemipc->map[i]);
+	// 	refresh();
+	// 	i--;
+	// }
 	refresh();
 }
 

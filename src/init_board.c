@@ -23,14 +23,14 @@ void	init_board(t_lemipc *lemipc)
 		sizeof(char) * (BOARD_WIDTH * BOARD_HEIGHT), IPC_CREAT | 0666);
 	if (lemipc->shm_id < 0)
 	{
-		perror("shmget");
+		perror("init_board: shmget");
 		exit(1);
 	}
 
 	// Attach the segment
 	if ((lemipc->map = shmat(lemipc->shm_id, NULL, 0)) == (char *) -1)
 	{
-		perror("shmat");
+		perror("init_board: shmat");
 		exit(1);
 	}
 	clear_board(lemipc->map);
