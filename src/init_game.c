@@ -1,39 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   init_game.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aleung-c <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/08 16:03:48 by aleung-c          #+#    #+#             */
-/*   Updated: 2017/06/08 16:03:50 by aleung-c         ###   ########.fr       */
+/*   Created: 2017/06/13 16:17:15 by aleung-c          #+#    #+#             */
+/*   Updated: 2017/06/13 16:17:17 by aleung-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/lemipc.h"
 
-int		main(int argc, char **argv)
+/*
+**	Init the map and clears it with zeros.
+*/
+
+void	init_game(t_lemipc *lemipc)
 {
-	if (argc < 3)
-	{
-		ft_putendl(KRED "Usage: ./lemipc [nb_player_for_team] ..." KRESET);
-		exit(-1);
-	}
-	signal(SIGINT, sig_handler);
-	lemipc(argc, argv);
-	return (0);
+	// Creates the segment.
+	init_shm_segment(lemipc);
+	
+	clear_map(lemipc->map);
+
+	init_semaphores(lemipc);
+	
+	init_msgq(lemipc);
 }
 
-void	sig_handler(int signo)
+/*
+**	Clears the map with zeros.
+*/
+
+void			clear_map(int *map)
 {
-	if (signo == SIGINT)
+	int i;
+	int end;
+
+	i = 0;
+	end = BOARD_HEIGHT * BOARD_WIDTH;
+	while (i != end)
 	{
-		// printf("received SIGINT\n");
-		lock_semaphore(g_lemipc.sem_id, 1);
-		clean_shm_segment();
-		unlock_semaphore(g_lemipc.sem_id, 1);
-		clean_semaphores();
-		clean_msgq();
-		end_display(&g_lemipc);
+		map[i] = 0;
+		i++;
 	}
 }

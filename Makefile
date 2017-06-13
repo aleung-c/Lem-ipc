@@ -10,8 +10,6 @@
 #                                                                              #
 # **************************************************************************** #
 
-
-
 NAME = lemipc
 
 HEADER = includes/lem-ipc.h
@@ -21,7 +19,10 @@ src/lemipc.c \
 src/get_game_args.c \
 src/init_memory.c \
 src/clean_memory.c \
-src/map_handle.c \
+src/init_game.c \
+src/gameplay.c \
+src/target_management.c \
+src/team_management.c \
 src/init_display.c \
 src/init_players.c \
 src/board_tools.c \

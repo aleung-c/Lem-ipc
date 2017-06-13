@@ -93,13 +93,18 @@ typedef struct				s_player
 	int						team;
 	int						nb;
 	t_vec2					pos;
+
+	int						is_leader;
+	int						leader_set;
+	t_vec2					target_pos;
 }							t_player;
 
 typedef struct				s_lemipc
 {
+	int						nb_connected_players;
 	int						is_parent;
 	int						nb_team;
-	int						nb_player_per_team;
+	int						*nb_player_per_team;
 
 	int						shm_id;
 	int						*map;
@@ -139,8 +144,15 @@ void						get_game_args(t_lemipc *lemipc, int argc,
 void						init_game(t_lemipc *lemipc);
 void						clear_map(int *map);
 
+/*
+**	init players -> fork() is used here.
+*/
+
 void						init_players(t_lemipc *lemipc);
 void						init_cur_player(t_lemipc *lemipc, int team, int nb);
+t_vec2						set_player_spawn_position(t_lemipc *lemipc);
+void						init_player_variables(t_player *player, int team,
+									int nb, t_vec2 spawn_pos);
 
 /*
 **	ncurse display functions.
@@ -157,6 +169,27 @@ void						end_display(t_lemipc *lemipc);
 void						move_in_dir(t_player *player, int *map, t_dir dir);
 void						set_move_modifiers(int *x_move, int *y_move,
 								t_dir dir);
+
+int							is_point_in(t_lemipc *lemipc, t_vec2 point);
+int							am_i_dead(t_lemipc *lemipc);
+
+/*
+**	Gameplay
+*/
+
+void						play_turn(t_lemipc *lemipc);
+
+/*
+**	Team Management
+*/
+
+char						*check_communications(t_lemipc *lemipc);
+
+/*
+**	Target management
+*/
+
+t_vec2						get_target(t_lemipc *lemipc);
 
 /*
 **	Board tools - board_tools.c
@@ -193,5 +226,6 @@ void						init_semaphores(t_lemipc *lemipc);
 void						clean_shm_segment();
 void						clean_semaphores();
 void						clean_msgq();
+void						kill_cur_process();
 
 #endif

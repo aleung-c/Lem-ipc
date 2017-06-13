@@ -32,26 +32,27 @@ int			is_point_in(t_lemipc *lemipc, t_vec2 point)
 **	If there are two players from the same team that is not
 **	the cur player team ==> death.
 **
-**	x means out of board in the scooped points.
+**	-1 means out of board in the scooped points.
 */
 
-int			check_death(t_lemipc *lemipc)
+int			am_i_dead(t_lemipc *lemipc)
 {
 	int			i;
 	int			y;
 	t_vec2		next_point;
 	int			points[8];
 
-	i = 8;
+	i = 7;
+	y = 0;
 	next_point.x = lemipc->player.pos.x - 1;
 	next_point.y = lemipc->player.pos.y + 1;
 	// get the values on the 8 points surrounding the player.
 	while (i != -1)
 	{
 		if (is_point_in(lemipc, next_point))
-			points[i] = get_board_value(lemipc->map, next_point.x, next_point.y);
+			points[y] = get_board_value(lemipc->map, next_point.x, next_point.y);
 		else
-			points[i] = 'x';
+			points[y] = -1;
 		next_point.x += 1;
 		if (i % 3 == 0)
 		{
@@ -59,13 +60,15 @@ int			check_death(t_lemipc *lemipc)
 			next_point.y -= 1;
 		}
 		i--;
+		y++;
 	}
 	// then check the value of these points.
 	i = 0;
 	y = 0;
 	while (i != 8)
 	{
-		if (points[i] != (48 + lemipc->player.team))
+		if (points[i] != lemipc->player.team
+			&& points[y] != 0 && points[y] != -1)
 		{
 			while (y != 8)
 			{
@@ -73,6 +76,7 @@ int			check_death(t_lemipc *lemipc)
 					return (B_TRUE);
 				y++;
 			}
+			y = 0;
 		}
 		i++;
 	}

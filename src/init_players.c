@@ -29,7 +29,7 @@ void	init_players(t_lemipc *lemipc)
 	lemipc->is_parent = 1;
 	while (team_i < lemipc->nb_team)
 	{
-		while (player_i < lemipc->nb_player_per_team)
+		while (player_i < lemipc->nb_player_per_team[team_i])
 		{
 			lemipc->pid = fork();
 			if (lemipc->pid >= 0) // fork was successful
@@ -37,7 +37,8 @@ void	init_players(t_lemipc *lemipc)
 				if (lemipc->pid == 0)
 				{
 					lemipc->is_parent = 0;
-					srand(time(NULL) + team_i + player_i + i);
+					// srand(time(NULL) + team_i + player_i + i);
+					srand(time(NULL) ^ (getpid()<<16));
 					init_cur_player(lemipc, team_i + 1, player_i + 1);
 					i++;
 					break ;
@@ -54,7 +55,7 @@ void	init_players(t_lemipc *lemipc)
 			}
 			player_i++;
 		}
-		if (lemipc->pid == 0)
+		if (lemipc->pid == 0 && getpid() != lemipc->starter_pid)
 			break ;
 		team_i++;
 		player_i = 0;
@@ -71,10 +72,30 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 {
 	t_vec2		spawn_pos;
 
+	spawn_pos = set_player_spawn_position(lemipc);
+	init_player_variables(&lemipc->player, team, nb, spawn_pos);
+	lock_semaphore(lemipc->sem_id, 1);
+	set_board_value(lemipc->map, lemipc->player.pos.x,
+						lemipc->player.pos.y, lemipc->player.team);
+	unlock_semaphore(lemipc->sem_id, 1);
+
+	// debug print.
+	ft_putendl(KGRN "player joined:" KRESET);
+	ft_putstr("team ");
+	ft_putnbr(lemipc->player.team);
+	ft_putstr("\nnumber ");
+	ft_putnbr(lemipc->player.nb);
+	ft_putchar('\n');
+	printf("pos = %dx %dy\n", lemipc->player.pos.x, lemipc->player.pos.y);
+	ft_putchar('\n');
+}
+
+t_vec2		set_player_spawn_position(t_lemipc *lemipc)
+{
+	t_vec2		spawn_pos;
+
 	spawn_pos.x = rand() % BOARD_WIDTH;
 	spawn_pos.y = rand() % BOARD_HEIGHT;
-	
-	// Check for case already occupied.
 	while (get_board_value(lemipc->map, spawn_pos.x, spawn_pos.y) != 0)
 	{
 		spawn_pos.x += 2;
@@ -88,23 +109,17 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 			}
 		}
 	}
-	lemipc->player.is_dead = 0;
-	lemipc->player.team = team;
-	lemipc->player.nb = nb;
-	lemipc->player.pos.x = spawn_pos.x;
-	lemipc->player.pos.y = spawn_pos.y;
-	
-	lock_semaphore(lemipc->sem_id, 1);
-	set_board_value(lemipc->map, lemipc->player.pos.x, lemipc->player.pos.y, lemipc->player.team);
-	unlock_semaphore(lemipc->sem_id, 1);
+	return (spawn_pos);
+}
 
-	// debug print.
-	ft_putendl(KGRN "player joined:" KRESET);
-	ft_putstr("team ");
-	ft_putnbr(lemipc->player.team);
-	ft_putstr("\nnumber ");
-	ft_putnbr(lemipc->player.nb);
-	ft_putchar('\n');
-	printf("pos = %dx %dy\n", lemipc->player.pos.x, lemipc->player.pos.y);
-	ft_putchar('\n');
+void		init_player_variables(t_player *player, int team,
+									int nb, t_vec2 spawn_pos)
+{
+	player->is_dead = 0;
+	player->team = team;
+	player->nb = nb;
+	player->pos.x = spawn_pos.x;
+	player->pos.y = spawn_pos.y;
+	player->is_leader = B_FALSE;
+	player->leader_set = B_FALSE;
 }

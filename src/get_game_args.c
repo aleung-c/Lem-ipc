@@ -14,19 +14,28 @@
 
 void	get_game_args(t_lemipc *lemipc, int argc, char **argv)
 {
-	if (argc == 3)
+	int i;
+
+	i = 0;
+	if (argc >= 3)
 	{
-		lemipc->nb_team = ft_atoi(argv[1]);
-		if (lemipc->nb_team == 0)
+		lemipc->nb_team = argc - 1;
+		lemipc->nb_player_per_team = (int *)malloc(sizeof(int) * lemipc->nb_team);
+		i = 0;
+		while (i < lemipc->nb_team)
 		{
-			ft_putendl(KRED "Error: Invalid team number" KRESET);
-			exit(-1);
+			lemipc->nb_player_per_team[i] = ft_atoi(argv[i + 1]);
+			if (lemipc->nb_player_per_team[i] < 1)
+			{
+				ft_putendl(KRED "Error: Need at least one member for team!" KRESET);
+				exit(-1);
+			}
+			i++;
 		}
-		lemipc->nb_player_per_team = ft_atoi(argv[2]);
-		if (lemipc->nb_player_per_team == 0)
-		{
-			ft_putendl(KRED "Error: Invalid number of player per team" KRESET);
-			exit(-1);
-		}
+	}
+	else
+	{
+		ft_putendl(KRED "Error: Need at least two teams!" KRESET);
+		exit(-1);
 	}
 }

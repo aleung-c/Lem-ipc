@@ -32,7 +32,7 @@ void		move_in_dir(t_player *player, int *map, t_dir dir)
 	}
 	else
 	{
-		printf("player cant move there\n");
+		// printf("player cant move there\n");
 		return ;
 	}
 }

@@ -14,19 +14,26 @@
 
 void	lemipc(int argc, char **argv)
 {
+	int i;
 	// t_lemipc			lemipc;
 
 	ft_putstr("Hello lemipc\n");
 
 	get_game_args(&g_lemipc, argc, argv);
-	
+
 	// TODO : protect against less cases than players.
 
 	ft_putendl("Game datas:");
 	ft_putnbr(g_lemipc.nb_team);
-	ft_putendl(" teams");
-	ft_putnbr(g_lemipc.nb_player_per_team);
-	ft_putendl(" player per teams");
+	ft_putendl(" teams:");
+	i = 0;
+	while (i < g_lemipc.nb_team)
+	{
+		ft_putnbr(g_lemipc.nb_player_per_team[i]);
+		ft_putchar(' ');
+		i++;
+	}
+	ft_putchar('\n');
 
 	g_lemipc.starter_pid = getpid();
 	init_game(&g_lemipc);
@@ -41,21 +48,14 @@ void	lemipc(int argc, char **argv)
 			init_display(&g_lemipc);
 
 			display_game_board(&g_lemipc);
-			sleep(2);
+			// sleep(2);
 		}
 		// but every process decides their moves.
 		if (g_lemipc.player.is_dead == 0)
 		{
-			// steps:
-			// ----- check if im dead.
-
-			// ----- check if target is set.
-				// if not, set target and sync teammates.
-
-			// ----- move toward target.
-
+			play_turn(&g_lemipc);
 		}
 	}
-	end_display(&g_lemipc);
-	sig_handler(SIGINT);
+	if (g_lemipc.is_parent == 1)
+		end_display(&g_lemipc);
 }
