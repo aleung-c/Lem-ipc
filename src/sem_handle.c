@@ -12,7 +12,6 @@
 
 #include "../includes/lemipc.h"
 
-
 void						lock_semaphore(int sem_id, int sem)
 {
 	struct sembuf	sb;

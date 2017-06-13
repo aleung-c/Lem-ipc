@@ -16,9 +16,11 @@ void	init_players(t_lemipc *lemipc)
 {
 	int			team_i;
 	int			player_i;
+	int			i;
 
 	team_i = 0;
 	player_i = 1;
+	i = 1;
 	// set start player ids
 	lemipc->player.team = 0;
 	lemipc->player.nb = 1;
@@ -35,23 +37,14 @@ void	init_players(t_lemipc *lemipc)
 				if (lemipc->pid == 0)
 				{
 					lemipc->is_parent = 0;
-					srand(time(NULL) + team_i + player_i);
-					// ft_putstr("Child process:\n");
+					srand(time(NULL) + team_i + player_i + i);
 					init_cur_player(lemipc, team_i + 1, player_i + 1);
-					// sleep(5);
-
-					// while (1)
-					// {
-					// 	sleep(2);
-					// 	move_in_dir(&lemipc->player, lemipc->map, RIGHT);	
-					// }
-					// shmdt(lemipc->map);
-					break;
+					i++;
+					break ;
 				}
 				else
 				{
 					// Parent process
-					// ft_putstr("Parent process\n");
 				}
 			}
 			else // fork failed
@@ -62,9 +55,7 @@ void	init_players(t_lemipc *lemipc)
 			player_i++;
 		}
 		if (lemipc->pid == 0)
-		{
 			break ;
-		}
 		team_i++;
 		player_i = 0;
 	}
@@ -73,6 +64,7 @@ void	init_players(t_lemipc *lemipc)
 /*
 **	Since we fork the starting process, it is NOT NEEDED to 
 **	call shmget() and shmat() again.
+**	The forked child inherit parents segments.
 */
 
 void	init_cur_player(t_lemipc *lemipc, int team, int nb)
@@ -81,30 +73,32 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 
 	spawn_pos.x = rand() % BOARD_WIDTH;
 	spawn_pos.y = rand() % BOARD_HEIGHT;
-	while (get_board_value(lemipc->map, spawn_pos.x, spawn_pos.y) != '0')
+	
+	// Check for case already occupied.
+	while (get_board_value(lemipc->map, spawn_pos.x, spawn_pos.y) != 0)
 	{
-		// if case already occupied, go on looking for an empty case;
-		spawn_pos.x += 1;
-		if (spawn_pos.x == BOARD_WIDTH)
+		spawn_pos.x += 2;
+		if (spawn_pos.x >= BOARD_WIDTH)
 		{
 			spawn_pos.x = 0;
 			spawn_pos.y += 1;
-			if (spawn_pos.y == BOARD_HEIGHT)
+			if (spawn_pos.y >= BOARD_HEIGHT)
 			{
 				spawn_pos.y = 0;
 			}
 		}
 	}
-
+	lemipc->player.is_dead = 0;
 	lemipc->player.team = team;
 	lemipc->player.nb = nb;
-	lemipc->player.pos.x = rand() % BOARD_WIDTH;
-	lemipc->player.pos.y = rand() % BOARD_HEIGHT;
-
+	lemipc->player.pos.x = spawn_pos.x;
+	lemipc->player.pos.y = spawn_pos.y;
 	
-	// TODO: block sh segment with semaphore.
-	set_board_value(lemipc->map, lemipc->player.pos.x, lemipc->player.pos.y, 48 + lemipc->player.nb);
+	lock_semaphore(lemipc->sem_id, 1);
+	set_board_value(lemipc->map, lemipc->player.pos.x, lemipc->player.pos.y, lemipc->player.team);
+	unlock_semaphore(lemipc->sem_id, 1);
 
+	// debug print.
 	ft_putendl(KGRN "player joined:" KRESET);
 	ft_putstr("team ");
 	ft_putnbr(lemipc->player.team);

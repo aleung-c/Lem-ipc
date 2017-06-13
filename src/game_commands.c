@@ -12,7 +12,7 @@
 
 #include "../includes/lemipc.h"
 
-void		move_in_dir(t_player *player, char *map, t_dir dir)
+void		move_in_dir(t_player *player, int *map, t_dir dir)
 {
 	int			y_move;
 	int			x_move;
@@ -23,12 +23,10 @@ void		move_in_dir(t_player *player, char *map, t_dir dir)
 	new_pos.y = player->pos.y + y_move;
 	if ((new_pos.x >= 0 && new_pos.x < BOARD_WIDTH)
 		&& (new_pos.y >= 0 && new_pos.y < BOARD_HEIGHT)
-		&& get_board_value(map, new_pos.x, new_pos.y) == '0')
+		&& get_board_value(map, new_pos.x, new_pos.y) == 0)
 	{
-		// clear old pos
-		set_board_value(map, player->pos.x, player->pos.y, '0');
-		// set new pos
-		set_board_value(map, new_pos.x, new_pos.y, 48 + player->nb);
+		set_board_value(map, player->pos.x, player->pos.y, 0);
+		set_board_value(map, new_pos.x, new_pos.y, player->team);
 		player->pos.x = new_pos.x;
 		player->pos.y = new_pos.y;
 	}

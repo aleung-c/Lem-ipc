@@ -17,6 +17,7 @@
 # include <sys/ipc.h>
 # include <sys/shm.h>
 # include <sys/sem.h>
+# include <sys/msg.h>
 # include <stdio.h> //
 # include <errno.h>
 # include <curses.h>
@@ -58,6 +59,14 @@
 # define BOARD_WIDTH 20
 # define BOARD_HEIGHT 20
 # define SHM_MAP_KEY 4242
+# define SEM_KEY 4243
+# define MSG_SIZE 128
+
+typedef enum				e_bool
+{
+	B_FALSE,
+	B_TRUE
+}							t_bool;
 
 typedef enum				e_dir
 {
@@ -79,6 +88,8 @@ typedef struct				s_vec2
 
 typedef struct				s_player
 {
+	int						is_dead;
+
 	int						team;
 	int						nb;
 	t_vec2					pos;
@@ -91,8 +102,10 @@ typedef struct				s_lemipc
 	int						nb_player_per_team;
 
 	int						shm_id;
-	char					*map;
+	int						*map;
 	int						sem_id;
+
+	int						*msgq_ids;
 
 	t_player				player;
 
@@ -102,7 +115,15 @@ typedef struct				s_lemipc
 	pid_t					pid;
 }							t_lemipc;
 
+/*
+**	----- GLOBAL VAR -----
+*/
 
+t_lemipc					g_lemipc;
+
+/*
+**	----- GLOBAL VAR -----
+*/
 
 /*
 **	----- Functions prototypes.
@@ -115,8 +136,8 @@ void						lemipc();
 void						get_game_args(t_lemipc *lemipc, int argc,
 								char **argv);
 
-void						init_board(t_lemipc *lemipc);
-void						clear_board(char *board);
+void						init_game(t_lemipc *lemipc);
+void						clear_map(int *map);
 
 void						init_players(t_lemipc *lemipc);
 void						init_cur_player(t_lemipc *lemipc, int team, int nb);
@@ -133,7 +154,7 @@ void						end_display(t_lemipc *lemipc);
 **	Game commands
 */
 
-void						move_in_dir(t_player *player, char *map, t_dir dir);
+void						move_in_dir(t_player *player, int *map, t_dir dir);
 void						set_move_modifiers(int *x_move, int *y_move,
 								t_dir dir);
 
@@ -141,9 +162,9 @@ void						set_move_modifiers(int *x_move, int *y_move,
 **	Board tools - board_tools.c
 */
 
-char						get_board_value(char *board, int x, int y);
-void						set_board_value(char *board, int x, int y,
-								char val);
+int							get_board_value(int *board, int x, int y);
+void						set_board_value(int *board, int x, int y,
+								int val);
 
 /*
 **	Semaphore handling.
@@ -152,5 +173,25 @@ void						set_board_value(char *board, int x, int y,
 void						lock_semaphore(int sem_id, int sem);
 void						unlock_semaphore(int sem_id, int sem);
 
+/*
+**	Msg queue
+*/
+
+void						init_msgq(t_lemipc *lemipc);
+
+/*
+**	Init memory
+*/
+
+void						init_shm_segment(t_lemipc *lemipc);
+void						init_semaphores(t_lemipc *lemipc);
+
+/*
+**	Clean memory
+*/
+
+void						clean_shm_segment();
+void						clean_semaphores();
+void						clean_msgq();
 
 #endif

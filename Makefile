@@ -19,12 +19,16 @@ HEADER = includes/lem-ipc.h
 SRC = src/main.c \
 src/lemipc.c \
 src/get_game_args.c \
-src/init_board.c \
+src/init_memory.c \
+src/clean_memory.c \
+src/map_handle.c \
 src/init_display.c \
 src/init_players.c \
 src/board_tools.c \
 src/game_commands.c \
-src/sem_handle.c
+src/game_checks.c \
+src/sem_handle.c \
+src/msgq_handle.c
 
 OBJ = $(SRC:.c=.o)
 

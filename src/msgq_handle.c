@@ -1,23 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   board_tools.c                                      :+:      :+:    :+:   */
+/*   msgq_handle.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aleung-c <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/09 12:14:56 by aleung-c          #+#    #+#             */
-/*   Updated: 2017/06/09 12:14:57 by aleung-c         ###   ########.fr       */
+/*   Created: 2017/06/13 12:43:13 by aleung-c          #+#    #+#             */
+/*   Updated: 2017/06/13 12:43:16 by aleung-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/lemipc.h"
 
-int		get_board_value(int *board, int x, int y)
+void		init_msgq(t_lemipc *lemipc)
 {
-	return (board[(y * BOARD_WIDTH) + x]);
-}
+	int i;
 
-void	set_board_value(int *board, int x, int y, int val)
-{
-	board[(y * BOARD_WIDTH) + x] = val;
+	lemipc->msgq_ids = (int *)malloc(sizeof(int) * lemipc->nb_team);
+	i = 0;
+	while (i < lemipc->nb_team)
+	{
+		if ((lemipc->msgq_ids[i] = msgget(i + 1, IPC_CREAT | 0666)) == -1)
+		{
+			perror("init_msg: msgget: msgget failed");
+			exit(1);
+		}
+		i++;
+	}
+	printf(KYEL "%d msg queue(s) initialized.\n" KRESET, i);
 }

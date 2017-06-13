@@ -1,23 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   board_tools.c                                      :+:      :+:    :+:   */
+/*   map_handle.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aleung-c <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/09 12:14:56 by aleung-c          #+#    #+#             */
-/*   Updated: 2017/06/09 12:14:57 by aleung-c         ###   ########.fr       */
+/*   Created: 2017/06/13 14:21:30 by aleung-c          #+#    #+#             */
+/*   Updated: 2017/06/13 14:21:34 by aleung-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/lemipc.h"
 
-int		get_board_value(int *board, int x, int y)
+/*
+**	Init the map and clears it with zeros.
+*/
+
+void	init_game(t_lemipc *lemipc)
 {
-	return (board[(y * BOARD_WIDTH) + x]);
+	// Creates the segment.
+	init_shm_segment(lemipc);
+	
+	clear_map(lemipc->map);
+
+	init_semaphores(lemipc);
+	
+	init_msgq(lemipc);
 }
 
-void	set_board_value(int *board, int x, int y, int val)
+/*
+**	Clears the map with zeros.
+*/
+
+void			clear_map(int *map)
 {
-	board[(y * BOARD_WIDTH) + x] = val;
+	int i;
+	int end;
+
+	i = 0;
+	end = BOARD_HEIGHT * BOARD_WIDTH;
+	while (i != end)
+	{
+		map[i] = 0;
+		i++;
+	}
 }

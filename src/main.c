@@ -26,29 +26,11 @@ int		main(int argc, char **argv)
 
 void	sig_handler(int signo)
 {
-	int		shm_id;
-	char	*map;
-
-
 	if (signo == SIGINT)
 	{
 		printf("received SIGINT\n");
-		shm_id = shmget(SHM_MAP_KEY,
-			sizeof(char) * (BOARD_WIDTH * BOARD_HEIGHT), 0666);
-
-		if (shm_id < 0)
-		{
-			perror("sig_handler: shmget");
-			exit(1);
-		}
-
-		// Attach the segment
-		if ((map = shmat(shm_id, NULL, 0)) == (char *) -1)
-		{
-			perror("sig_handler: shmat");
-			exit(1);
-		}
-		shmdt(map);
-		shmctl(shm_id, IPC_RMID, NULL);
+		clean_shm_segment();
+		clean_semaphores();
+		clean_msgq();
 	}
 }
