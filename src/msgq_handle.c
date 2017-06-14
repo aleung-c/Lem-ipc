@@ -29,3 +29,5 @@ void		init_msgq(t_lemipc *lemipc)
 	}
 	printf(KYEL "%d msg queue(s) initialized.\n" KRESET, i);
 }
+
+

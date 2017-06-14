@@ -12,6 +12,35 @@
 
 #include "../includes/lemipc.h"
 
+void		move_toward(t_player *player, int *map, t_vec2 target_pos)
+{
+	t_dir dir;
+
+	dir = find_dir(player->pos, target_pos);
+	move_in_dir(player, map, dir);
+}
+
+t_dir		find_dir(t_vec2 origine, t_vec2 target_pos)
+{
+	if (origine.x < target_pos.x)
+	{
+		return (RIGHT);
+	}
+	else if (origine.x > target_pos.x)
+	{
+		return (LEFT);
+	}
+	if (origine.y < target_pos.y)
+	{
+		return (UP);
+	}
+	else if (origine.y > target_pos.y)
+	{
+		return (DOWN);
+	}
+	return (rand() % 4);
+}
+
 void		move_in_dir(t_player *player, int *map, t_dir dir)
 {
 	int			y_move;

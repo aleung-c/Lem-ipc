@@ -12,21 +12,6 @@
 
 #include "../includes/lemipc.h"
 
-int			is_point_in(t_lemipc *lemipc, t_vec2 point)
-{
-	(void)lemipc;
-	if (point.x >= BOARD_WIDTH || point.x < 0
-		|| point.y >= BOARD_HEIGHT || point.y < 0)
-	{
-		return (B_FALSE);
-	}
-	else
-	{
-		return (B_TRUE);
-	}
-
-}
-
 /*
 **	Check 8 directions around the player.
 **	If there are two players from the same team that is not
@@ -49,7 +34,7 @@ int			am_i_dead(t_lemipc *lemipc)
 	// get the values on the 8 points surrounding the player.
 	while (i != -1)
 	{
-		if (is_point_in(lemipc, next_point))
+		if (is_vec_point_in(lemipc, next_point))
 			points[y] = get_board_value(lemipc->map, next_point.x, next_point.y);
 		else
 			points[y] = -1;
@@ -68,7 +53,7 @@ int			am_i_dead(t_lemipc *lemipc)
 	while (i != 8)
 	{
 		if (points[i] != lemipc->player.team
-			&& points[y] != 0 && points[y] != -1)
+			&& points[i] != 0 && points[i] != -1)
 		{
 			while (y != 8)
 			{

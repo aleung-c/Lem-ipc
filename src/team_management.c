@@ -14,9 +14,36 @@
 
 char		*check_communications(t_lemipc *lemipc)
 {
-	char		*msg_ret;
+	t_message		*msg;
+	long			msg_type;
+	int				result;
+	
+	msg_type = 0;
+	msg = (t_message *)malloc(sizeof(t_message));
+	result = msgrcv(lemipc->msgq_ids[lemipc->player.team],
+		(void *) msg, sizeof(msg->text),
+		msg_type, MSG_NOERROR | IPC_NOWAIT);
+	if (result == -1)
+	{
+		return (NULL);
+	}
+	return (&msg->text[0]);
+}
 
-	(void)lemipc;
-	msg_ret = NULL;
-	return (msg_ret);
+void		call_team(t_lemipc *lemipc)
+{
+	send_msg_to_team(lemipc, "Need assistance!");
+}
+
+void		send_msg_to_team(t_lemipc *lemipc, char *msg_text)
+{
+	t_message		msg;
+	long			msg_type;
+
+	msg_type = 1;
+
+	ft_strncpy(msg.text, msg_text, MSG_SIZE);
+
+	msgsnd(lemipc->msgq_ids[lemipc->player.team],
+		&msg, MSG_SIZE, IPC_NOWAIT);
 }

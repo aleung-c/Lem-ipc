@@ -26,14 +26,9 @@ int		main(int argc, char **argv)
 
 void	sig_handler(int signo)
 {
-	if (signo == SIGINT)
+	if (signo == SIGINT || signo == SIGSTOP || signo == SIGKILL)
 	{
-		// printf("received SIGINT\n");
-		lock_semaphore(g_lemipc.sem_id, 1);
-		clean_shm_segment();
-		unlock_semaphore(g_lemipc.sem_id, 1);
-		clean_semaphores();
-		clean_msgq();
+		clean_all();
 		end_display(&g_lemipc);
 	}
 }

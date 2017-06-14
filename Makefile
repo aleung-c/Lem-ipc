@@ -26,6 +26,7 @@ src/team_management.c \
 src/init_display.c \
 src/init_players.c \
 src/board_tools.c \
+src/tools.c \
 src/game_commands.c \
 src/game_checks.c \
 src/sem_handle.c \

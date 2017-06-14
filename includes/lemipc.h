@@ -22,6 +22,7 @@
 # include <errno.h>
 # include <curses.h>
 # include <time.h>
+# include <math.h>
 # include "../libft/libft.h"
 
 /*
@@ -62,6 +63,8 @@
 # define SEM_KEY 4243
 # define MSG_SIZE 128
 
+# define SEARCH_SAMPLES 6
+
 typedef enum				e_bool
 {
 	B_FALSE,
@@ -79,6 +82,12 @@ typedef enum				e_dir
 /*
 ** ----- Program structs
 */
+
+typedef struct				s_message
+{
+    long					type;
+    char					text[MSG_SIZE];
+}							t_message;
 
 typedef struct				s_vec2
 {
@@ -166,12 +175,14 @@ void						end_display(t_lemipc *lemipc);
 **	Game commands
 */
 
+void						move_toward(t_player *player, int *map, t_vec2 target_pos);
 void						move_in_dir(t_player *player, int *map, t_dir dir);
 void						set_move_modifiers(int *x_move, int *y_move,
 								t_dir dir);
 
-int							is_point_in(t_lemipc *lemipc, t_vec2 point);
 int							am_i_dead(t_lemipc *lemipc);
+
+t_dir						find_dir(t_vec2 origine, t_vec2 target_pos);
 
 /*
 **	Gameplay
@@ -184,12 +195,15 @@ void						play_turn(t_lemipc *lemipc);
 */
 
 char						*check_communications(t_lemipc *lemipc);
+void						call_team(t_lemipc *lemipc);
+void						send_msg_to_team(t_lemipc *lemipc, char *msg_text);
 
 /*
 **	Target management
 */
 
 t_vec2						get_target(t_lemipc *lemipc);
+t_vec2						distance_search(t_lemipc *lemipc);
 
 /*
 **	Board tools - board_tools.c
@@ -198,6 +212,16 @@ t_vec2						get_target(t_lemipc *lemipc);
 int							get_board_value(int *board, int x, int y);
 void						set_board_value(int *board, int x, int y,
 								int val);
+int							is_vec_point_in(t_lemipc *lemipc, t_vec2 point);
+int							is_point_in(t_lemipc *lemipc, int x, int y);
+
+/*
+**	Tools
+*/
+
+int							get_distance(t_vec2 origine, t_vec2 destination);
+void						get_time(struct timespec *ts);
+struct timespec				timespec_diff(struct timespec *start, struct timespec *stop);
 
 /*
 **	Semaphore handling.
@@ -223,6 +247,7 @@ void						init_semaphores(t_lemipc *lemipc);
 **	Clean memory
 */
 
+void						clean_all();
 void						clean_shm_segment();
 void						clean_semaphores();
 void						clean_msgq();

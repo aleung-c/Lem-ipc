@@ -47,13 +47,13 @@ void		display_game_board(t_lemipc *lemipc)
 	y = 0;
 	end_y = BOARD_HEIGHT - 1;
 	getmaxyx(stdscr, max_x, max_y);
-	if (max_x < (BOARD_WIDTH * 2) || max_y < (BOARD_HEIGHT * 2))
-	{
-		endwin();
-		ft_putstr(KRED "Shellscreen too small! Resize please!\n" KRESET);
-		exit(-1);
-	}
-	clear();
+	// if (max_x < (BOARD_WIDTH * 2) || max_y < (BOARD_HEIGHT * 2))
+	// {
+	// 	endwin();
+	// 	ft_putstr(KRED "Shellscreen too small! Resize please!\n" KRESET);
+		// exit(-1);
+	// }
+	// clear();
 
 	while (y != BOARD_HEIGHT)
 	{

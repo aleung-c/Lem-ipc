@@ -12,25 +12,17 @@
 
 #include "../includes/lemipc.h"
 
+void	clean_all()
+{
+	lock_semaphore(g_lemipc.sem_id, 1);
+	clean_shm_segment();
+	unlock_semaphore(g_lemipc.sem_id, 1);
+	clean_semaphores();
+	clean_msgq();
+}
+
 void	clean_shm_segment()
 {
-	// int		shm_id;
-	// char	*map;
-
-	// shm_id = shmget(SHM_MAP_KEY,
-	// 	sizeof(char) * (BOARD_WIDTH * BOARD_HEIGHT), 0666);
-
-	// if (shm_id < 0)
-	// {
-	// 	perror("sig_handler: shmget");
-	// 	exit(1);
-	// }
-	// // Attach the segment
-	// if ((map = shmat(shm_id, NULL, 0)) == (char *) -1)
-	// {
-	// 	perror("sig_handler: shmat");
-	// 	exit(1);
-	// }
 	shmdt(g_lemipc.map);
 	shmctl(g_lemipc.shm_id, IPC_RMID, NULL);
 }
