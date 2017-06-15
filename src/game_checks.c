@@ -20,6 +20,8 @@
 **	-1 means out of board in the scooped points.
 */
 
+// TODO : capture from the left does not work.
+
 int			am_i_dead(t_lemipc *lemipc)
 {
 	int			i;
@@ -35,7 +37,10 @@ int			am_i_dead(t_lemipc *lemipc)
 	while (i != -1)
 	{
 		if (is_vec_point_in(lemipc, next_point))
-			points[y] = get_board_value(lemipc->map, next_point.x, next_point.y);
+		{
+			points[y] = get_board_value(lemipc->map,
+				next_point.x, next_point.y);
+		}
 		else
 			points[y] = -1;
 		next_point.x += 1;
@@ -64,6 +69,36 @@ int			am_i_dead(t_lemipc *lemipc)
 			y = 0;
 		}
 		i++;
+	}
+	return (B_FALSE);
+}
+
+int		is_game_over(t_lemipc *lemipc)
+{
+	int		team_i;
+	int		i;
+	int		single_team_found;
+
+	team_i = 1;
+	i = 0;
+	single_team_found = 1;
+	while (team_i < (lemipc->nb_team + 1))
+	{
+		while (i < (BOARD_WIDTH * BOARD_HEIGHT))
+		{
+			if (lemipc->map[i] != 0 && lemipc->map[i] != team_i)
+			{
+				single_team_found = 0;
+				break ;
+			}
+			i++;
+		}
+		if (single_team_found == 1)
+		{
+			return (B_TRUE);
+		}
+		team_i++;
+		i = 0;
 	}
 	return (B_FALSE);
 }

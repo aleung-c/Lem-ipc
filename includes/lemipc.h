@@ -25,6 +25,11 @@
 # include <math.h>
 # include "../libft/libft.h"
 
+# ifdef __MACH__
+#  include <mach/clock.h>
+#  include <mach/mach.h>
+# endif
+
 /*
 **	color in text;
 */
@@ -40,20 +45,6 @@
 # define KRESET "\x1B[0m"
 
 /*
-**	Semaphore lib union define
-*/
-
-// # if !defined(__GNU_LIBRARY__) || defined(_SEM_SEMUN_UNDEFINED)
-// union semun
-// {
-// 	int val; // value for SETVAL
-// 	struct semid_ds* buf; // buffer for IPC_STAT, IPC_SET
-// 	unsigned short* array; // array for GETALL, SETALL
-// 	struct seminfo* __buf; // buffer for IPC_INFO
-// };
-// # endif
-
-/*
 ** ----- Game defines
 */
 
@@ -64,6 +55,14 @@
 # define MSG_SIZE 128
 
 # define SEARCH_SAMPLES 6
+
+# define MS_TURN_DELAY 100
+
+/*
+** ----- ncurse display defines
+*/
+
+# define EMPTY_CASE '.'
 
 typedef enum				e_bool
 {
@@ -103,9 +102,10 @@ typedef struct				s_player
 	int						nb;
 	t_vec2					pos;
 
-	int						is_leader;
-	int						leader_set;
 	t_vec2					target_pos;
+
+	int						requesting_assistance;
+	int						assisting;
 }							t_player;
 
 typedef struct				s_lemipc
@@ -122,6 +122,8 @@ typedef struct				s_lemipc
 	int						*msgq_ids;
 
 	t_player				player;
+
+	struct timespec			turn_delay;
 
 	WINDOW					*mainwin;
 
@@ -175,14 +177,15 @@ void						end_display(t_lemipc *lemipc);
 **	Game commands
 */
 
-void						move_toward(t_player *player, int *map, t_vec2 target_pos);
-void						move_in_dir(t_player *player, int *map, t_dir dir);
+int							move_toward(t_player *player, int *map, t_vec2 target_pos);
+int							move_in_dir(t_player *player, int *map, t_dir dir);
 void						set_move_modifiers(int *x_move, int *y_move,
 								t_dir dir);
 
 int							am_i_dead(t_lemipc *lemipc);
+int							is_game_over(t_lemipc *lemipc);
 
-t_dir						find_dir(t_vec2 origine, t_vec2 target_pos);
+t_dir						find_dir(t_vec2 origine, int *map, t_vec2 target_pos);
 
 /*
 **	Gameplay
@@ -195,7 +198,8 @@ void						play_turn(t_lemipc *lemipc);
 */
 
 char						*check_communications(t_lemipc *lemipc);
-void						call_team(t_lemipc *lemipc);
+void						call_team(t_lemipc *lemipc, t_vec2 target);
+t_vec2						set_target_from_msg(t_lemipc *lemipc, char *msg);
 void						send_msg_to_team(t_lemipc *lemipc, char *msg_text);
 
 /*
@@ -220,8 +224,11 @@ int							is_point_in(t_lemipc *lemipc, int x, int y);
 */
 
 int							get_distance(t_vec2 origine, t_vec2 destination);
+
 void						get_time(struct timespec *ts);
 struct timespec				timespec_diff(struct timespec *start, struct timespec *stop);
+int							timespec_is_over(struct timespec time_end);
+void						add_nsec_to_timespec(struct timespec *time, long nanosec);
 
 /*
 **	Semaphore handling.

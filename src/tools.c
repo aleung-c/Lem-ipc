@@ -33,7 +33,7 @@ int		get_distance(t_vec2 origine, t_vec2 destination)
 **		long	tv_nsec;	// nanosecondes -> 1 000 000 000 ns == 1s
 **	};
 */
-/*
+
 #ifdef __MACH__
 
 void			get_time(struct timespec *ts)
@@ -72,4 +72,33 @@ struct timespec	timespec_diff(struct timespec *start, struct timespec *stop)
 		result.tv_nsec = stop->tv_nsec - start->tv_nsec;
 	}
 	return (result);
-}*/
+}
+
+int				timespec_is_over(struct timespec time_end)
+{
+	struct timespec	now;
+
+	get_time(&now);
+	if (now.tv_sec > time_end.tv_sec ||
+		(now.tv_sec == time_end.tv_sec && now.tv_nsec >= time_end.tv_nsec))
+		return (1);
+	return (0);
+}
+
+/*
+**	Add nano seconds to the timespec. Dont forget to multiply your sec time by
+**	1000000000, or by 1000000 if it is milliseconds.
+**	Example:
+**		add_nsec_to_timespec(&player->next_dinner_time,
+**		FOOD_LIFE_TIME * serv->world_hdl.t_unit * 1000000000);
+*/
+
+void			add_nsec_to_timespec(struct timespec *time, long nanosec)
+{
+	time->tv_nsec += nanosec;
+	while (time->tv_nsec > 1000000000)
+	{
+		time->tv_nsec -= 1000000000;
+		time->tv_sec += 1;
+	}
+}

@@ -28,7 +28,15 @@ void	sig_handler(int signo)
 {
 	if (signo == SIGINT || signo == SIGSTOP || signo == SIGKILL)
 	{
-		clean_all();
 		end_display(&g_lemipc);
+		clean_all();
+		exit(-1);
 	}
+	// if (signo == SIGSEGV)
+	// {
+	// 	clear();
+	// 	printf("segault: team #%d - nb #%d\n",
+	// 		g_lemipc.player.team,
+	// 		g_lemipc.player.nb);
+	// }
 }

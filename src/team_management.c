@@ -24,15 +24,32 @@ char		*check_communications(t_lemipc *lemipc)
 		(void *) msg, sizeof(msg->text),
 		msg_type, MSG_NOERROR | IPC_NOWAIT);
 	if (result == -1)
-	{
 		return (NULL);
-	}
 	return (&msg->text[0]);
 }
 
-void		call_team(t_lemipc *lemipc)
+/*
+**	concatenation of msg + target x + target y
+*/
+
+void		call_team(t_lemipc *lemipc, t_vec2 target)
 {
-	send_msg_to_team(lemipc, "Need assistance!");
+	char	msg[MSG_SIZE];
+	char	*x_value_text;
+	char	*y_value_text;
+
+	ft_strncpy(msg, "R ", 2);
+
+	x_value_text = ft_itoa(target.x);
+	ft_strncpy(msg + 2, x_value_text, ft_strlen(x_value_text));
+
+	ft_strncpy(msg + 2 + ft_strlen(x_value_text), " ", 1);
+	y_value_text = ft_itoa(target.y);
+	ft_strncpy(msg + 3 + ft_strlen(x_value_text),
+		y_value_text, ft_strlen(y_value_text));
+	ft_strncpy(msg + 3 + ft_strlen(x_value_text) + ft_strlen(y_value_text),
+		"\0", 1);
+	send_msg_to_team(lemipc, msg);
 }
 
 void		send_msg_to_team(t_lemipc *lemipc, char *msg_text)
@@ -42,6 +59,11 @@ void		send_msg_to_team(t_lemipc *lemipc, char *msg_text)
 
 	msg_type = 1;
 
+	if (ft_strlen(msg_text) > MSG_SIZE)
+	{
+		ft_putendl("Error: Message too long for queue");
+		exit (-1);
+	}
 	ft_strncpy(msg.text, msg_text, MSG_SIZE);
 
 	msgsnd(lemipc->msgq_ids[lemipc->player.team],

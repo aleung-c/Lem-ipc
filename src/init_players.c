@@ -20,35 +20,35 @@ void	init_players(t_lemipc *lemipc)
 
 	team_i = 0;
 	player_i = 1;
-	i = 1;
-	// set start player ids
-	lemipc->player.team = 0;
-	lemipc->player.nb = 1;
-	srand(time(NULL));
+	i = 0;
+	// init first player.
+	srand(time(NULL) ^ (getpid() << 16));
 	init_cur_player(lemipc, 1, 1);
+	get_time(&lemipc->turn_delay);
+	add_nsec_to_timespec(&lemipc->turn_delay, 
+		MS_TURN_DELAY * 1000000);
 	lemipc->is_parent = 1;
+	// init all the others.
 	while (team_i < lemipc->nb_team)
 	{
 		while (player_i < lemipc->nb_player_per_team[team_i])
 		{
 			lemipc->pid = fork();
-			if (lemipc->pid >= 0) // fork was successful
+			if (lemipc->pid >= 0)
 			{
 				if (lemipc->pid == 0)
 				{
 					lemipc->is_parent = 0;
-					// srand(time(NULL) + team_i + player_i + i);
-					srand(time(NULL) ^ (getpid()<<16));
+					srand(time(NULL) ^ (getpid() << 16));
+					get_time(&lemipc->turn_delay);
+					add_nsec_to_timespec(&lemipc->turn_delay, 
+						MS_TURN_DELAY * 1000000);
 					init_cur_player(lemipc, team_i + 1, player_i + 1);
 					i++;
 					break ;
 				}
-				else
-				{
-					// Parent process
-				}
 			}
-			else // fork failed
+			else
 			{
 				perror("Fork");
 				exit(-1);
@@ -120,6 +120,6 @@ void		init_player_variables(t_player *player, int team,
 	player->nb = nb;
 	player->pos.x = spawn_pos.x;
 	player->pos.y = spawn_pos.y;
-	player->is_leader = B_FALSE;
-	player->leader_set = B_FALSE;
+	player->requesting_assistance = 0;
+	player->assisting = 0;
 }

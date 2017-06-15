@@ -82,6 +82,29 @@ t_vec2					distance_search(t_lemipc *lemipc)
 	return (closest_target);
 }
 
+t_vec2		set_target_from_msg(t_lemipc *lemipc, char *msg)
+{
+	int		i;
+	int		msg_len;
+	t_vec2	ret;
 
+	(void)lemipc;
+	i = 0;
+	msg_len = ft_strlen(msg);
+	ret.x = -1;
+	ret.y = -1;
+	while (i != msg_len)
+	{
+		if (msg[i] == ' ' && msg[i + 1])
+		{
+			if (ret.x == -1)
+				ret.x = ft_atoi(&msg[i + 1]);
+			else
+				ret.y = ft_atoi(&msg[i + 1]);
+		}
+		i++;
+	}
+	return (ret);
+}
 
 

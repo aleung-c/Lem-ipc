@@ -59,7 +59,15 @@ void		display_game_board(t_lemipc *lemipc)
 	{
 		while (x != BOARD_WIDTH)
 		{
-			mvwaddstr(lemipc->mainwin, y, x, ft_itoa(lemipc->map[(end_y * BOARD_WIDTH) + x]));
+			if (lemipc->map[(end_y * BOARD_WIDTH) + x] == 0)
+			{
+				mvwaddch(lemipc->mainwin, y, x, EMPTY_CASE);
+			}
+			else
+			{
+				mvwaddstr(lemipc->mainwin, y, x,
+					ft_itoa(lemipc->map[(end_y * BOARD_WIDTH) + x]));
+			}
 			x++;
 		}
 		y++;
@@ -73,5 +81,5 @@ void		end_display(t_lemipc *lemipc)
 {
     delwin(lemipc->mainwin);
     endwin();
-    refresh();
+    // refresh();
 }
