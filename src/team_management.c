@@ -35,19 +35,24 @@ char		*check_communications(t_lemipc *lemipc)
 void		call_team(t_lemipc *lemipc, t_vec2 target)
 {
 	char	msg[MSG_SIZE];
+	char	*player_nb_text;
 	char	*x_value_text;
 	char	*y_value_text;
 
-	ft_strncpy(msg, "R ", 2);
-
+	player_nb_text = ft_itoa(lemipc->player.nb);
+	ft_strncpy(msg, player_nb_text, ft_strlen(player_nb_text));
+	ft_strncpy(msg + ft_strlen(player_nb_text), " ", 1);
 	x_value_text = ft_itoa(target.x);
-	ft_strncpy(msg + 2, x_value_text, ft_strlen(x_value_text));
-
-	ft_strncpy(msg + 2 + ft_strlen(x_value_text), " ", 1);
+	ft_strncpy(msg + ft_strlen(player_nb_text) + 1,
+		x_value_text, ft_strlen(x_value_text));
+	ft_strncpy(msg + ft_strlen(player_nb_text) + 1
+					+ ft_strlen(x_value_text), " ", 1);
 	y_value_text = ft_itoa(target.y);
-	ft_strncpy(msg + 3 + ft_strlen(x_value_text),
+	ft_strncpy(msg + ft_strlen(player_nb_text) + 2
+					+ ft_strlen(x_value_text),
 		y_value_text, ft_strlen(y_value_text));
-	ft_strncpy(msg + 3 + ft_strlen(x_value_text) + ft_strlen(y_value_text),
+	ft_strncpy(msg + ft_strlen(player_nb_text) + 2
+					+ ft_strlen(x_value_text) + ft_strlen(y_value_text),
 		"\0", 1);
 	send_msg_to_team(lemipc, msg);
 }

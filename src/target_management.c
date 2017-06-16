@@ -87,12 +87,19 @@ t_vec2		set_target_from_msg(t_lemipc *lemipc, char *msg)
 	int		i;
 	int		msg_len;
 	t_vec2	ret;
+	int		msg_sender;
 
-	(void)lemipc;
 	i = 0;
 	msg_len = ft_strlen(msg);
 	ret.x = -1;
 	ret.y = -1;
+	msg_sender = ft_atoi(msg);
+	if (msg_sender == lemipc->player.nb)
+	{
+		send_msg_to_team(lemipc, msg);
+		msg = NULL;
+		return ret;
+	}
 	while (i != msg_len)
 	{
 		if (msg[i] == ' ' && msg[i + 1])

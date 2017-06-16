@@ -80,14 +80,14 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 	unlock_semaphore(lemipc->sem_id, 1);
 
 	// debug print.
-	ft_putendl(KGRN "player joined:" KRESET);
-	ft_putstr("team ");
-	ft_putnbr(lemipc->player.team);
-	ft_putstr("\nnumber ");
-	ft_putnbr(lemipc->player.nb);
-	ft_putchar('\n');
-	printf("pos = %dx %dy\n", lemipc->player.pos.x, lemipc->player.pos.y);
-	ft_putchar('\n');
+	// ft_putendl(KGRN "player joined:" KRESET);
+	// ft_putstr("team ");
+	// ft_putnbr(lemipc->player.team);
+	// ft_putstr("\nnumber ");
+	// ft_putnbr(lemipc->player.nb);
+	// ft_putchar('\n');
+	// printf("pos = %dx %dy\n", lemipc->player.pos.x, lemipc->player.pos.y);
+	// ft_putchar('\n');
 }
 
 t_vec2		set_player_spawn_position(t_lemipc *lemipc)
@@ -122,4 +122,5 @@ void		init_player_variables(t_player *player, int team,
 	player->pos.y = spawn_pos.y;
 	player->requesting_assistance = 0;
 	player->assisting = 0;
+	player->cur_msg = NULL;
 }

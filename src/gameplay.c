@@ -14,19 +14,18 @@
 
 void		play_turn(t_lemipc *lemipc)
 {
-	char			*msg;
+	// char			*msg;
 	int				move_ret;
 	// t_vec2			target;
 
 	// steps:
 	// ----- check if im dead.
-	lock_semaphore(lemipc->sem_id, 1);
 	if (am_i_dead(lemipc) == B_TRUE && lemipc->player.is_dead == B_FALSE)
 	{
-		printf(KMAG "player team %d - #%d - DEAD%s\n",
-			lemipc->player.team, lemipc->player.nb, KRESET);
+		// printf(KMAG "player team %d - #%d - DEAD%s\n",
+		// 	lemipc->player.team, lemipc->player.nb, KRESET);
 		lemipc->player.is_dead = B_TRUE;
-		
+		lock_semaphore(lemipc->sem_id, 1);
 		set_board_value(lemipc->map, lemipc->player.pos.x,
 			lemipc->player.pos.y, 0);
 		unlock_semaphore(lemipc->sem_id, 1);
@@ -34,33 +33,36 @@ void		play_turn(t_lemipc *lemipc)
 			kill_cur_process();
 
 	}
-	unlock_semaphore(lemipc->sem_id, 1);
 	if (lemipc->player.is_dead == B_FALSE)
 	{
 		// ----- Read on the MsgQ for orders/changes
-		msg = check_communications(lemipc);
-		if (msg)
+		lemipc->player.cur_msg = check_communications(lemipc);
+		if (lemipc->player.cur_msg)
 		{
 			// process msg;
-			printf("Received: %s\n", msg);
+			// printf("#%d received: %s\n",
+			// 	lemipc->player.nb, lemipc->player.cur_msg);
+			lemipc->player.target_pos = set_target_from_msg(lemipc,
+											lemipc->player.cur_msg);
+			if (lemipc->player.target_pos.x != -1)
+			{
+				lemipc->player.assisting = 1;
+				// printf("assisting!\n");
+				// free(lemipc->player.cur_msg);
+				lemipc->player.cur_msg = NULL;
+			}
 		}
 
 		// ----- Select a target position
 		if (timespec_is_over(lemipc->turn_delay))
 		{
-			// I got a msg, ill assist if im available!
-			if (msg)
-			{
-				lemipc->player.target_pos = set_target_from_msg(lemipc, msg);
-				lemipc->player.assisting = 1;
-			}
-			else if (lemipc->player.assisting == 0)
+			if (lemipc->player.assisting == 0)
 			{
 				// nothing going on, ill attack the closest.
 				lemipc->player.target_pos = get_target(lemipc);
 			}
 
-			// moving toward the selected stuff.
+			// moving toward the target.
 			lock_semaphore(lemipc->sem_id, 1);
 			move_ret = move_toward(&lemipc->player, lemipc->map, lemipc->player.target_pos);
 			unlock_semaphore(lemipc->sem_id, 1);
@@ -79,6 +81,7 @@ void		play_turn(t_lemipc *lemipc)
 				&& get_distance(lemipc->player.pos, lemipc->player.target_pos) <= 2)
 			{
 				lemipc->player.assisting = 0;
+				// printf("Assist reached!\n");
 			}
 
 			if (lemipc->player.requesting_assistance == 1
@@ -95,11 +98,4 @@ void		play_turn(t_lemipc *lemipc)
 				MS_TURN_DELAY * 1000000);
 		}
 	}
-	// ----- move toward target.
-	// lock_semaphore(lemipc->sem_id, 1);
-	// move_in_dir(&lemipc->player, lemipc->map, rand() % 4);
-	// unlock_semaphore(lemipc->sem_id, 1);
-	// sleep(1);
-
-	// usleep(500000);
 }

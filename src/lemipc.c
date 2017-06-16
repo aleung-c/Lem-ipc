@@ -30,11 +30,13 @@ void	lemipc(int argc, char **argv)
 			display_game_board(&g_lemipc);
 		}
 		// but every process decides their moves.
-		if (g_lemipc.player.is_dead == 0)
-			play_turn(&g_lemipc);
-		else if (g_lemipc.is_parent == 0)
-			break ;
 		if (is_game_over(&g_lemipc) == B_TRUE)
+			break ;
+		if (g_lemipc.player.is_dead == 0)
+		{
+			play_turn(&g_lemipc);
+		}
+		else if (g_lemipc.is_parent == 0)
 			break ;
 	}
 	if (g_lemipc.is_parent == 1)

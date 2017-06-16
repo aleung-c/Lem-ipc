@@ -50,7 +50,7 @@
 
 # define BOARD_WIDTH 20
 # define BOARD_HEIGHT 20
-# define SHM_MAP_KEY 4242
+# define SHM_MAP_KEY 4444
 # define SEM_KEY 4243
 # define MSG_SIZE 128
 
@@ -106,6 +106,7 @@ typedef struct				s_player
 
 	int						requesting_assistance;
 	int						assisting;
+	char					*cur_msg;
 }							t_player;
 
 typedef struct				s_lemipc
@@ -183,6 +184,8 @@ void						set_move_modifiers(int *x_move, int *y_move,
 								t_dir dir);
 
 int							am_i_dead(t_lemipc *lemipc);
+void						get_values_around(t_lemipc *lemipc, int *points);
+int							check_values_around(t_lemipc *lemipc, int *points);
 int							is_game_over(t_lemipc *lemipc);
 
 t_dir						find_dir(t_vec2 origine, int *map, t_vec2 target_pos);
