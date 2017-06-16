@@ -12,6 +12,9 @@
 
 #include "../includes/lemipc.h"
 
+// TODO: When player 1 1 dies, display is taken off....
+// Also, on speed 0, the memory is not freed.
+
 void		play_turn(t_lemipc *lemipc)
 {
 	// char			*msg;
@@ -20,19 +23,17 @@ void		play_turn(t_lemipc *lemipc)
 
 	// steps:
 	// ----- check if im dead.
+	lock_semaphore(lemipc->sem_id, 1);
 	if (am_i_dead(lemipc) == B_TRUE && lemipc->player.is_dead == B_FALSE)
 	{
 		// printf(KMAG "player team %d - #%d - DEAD%s\n",
 		// 	lemipc->player.team, lemipc->player.nb, KRESET);
 		lemipc->player.is_dead = B_TRUE;
-		lock_semaphore(lemipc->sem_id, 1);
 		set_board_value(lemipc->map, lemipc->player.pos.x,
 			lemipc->player.pos.y, 0);
 		unlock_semaphore(lemipc->sem_id, 1);
-		if (getpid() != lemipc->starter_pid)
-			kill_cur_process();
-
 	}
+	unlock_semaphore(lemipc->sem_id, 1);
 	if (lemipc->player.is_dead == B_FALSE)
 	{
 		// ----- Read on the MsgQ for orders/changes
@@ -53,7 +54,7 @@ void		play_turn(t_lemipc *lemipc)
 			}
 		}
 
-		// ----- Select a target position
+		// acting when turn comes.
 		if (timespec_is_over(lemipc->turn_delay))
 		{
 			if (lemipc->player.assisting == 0)

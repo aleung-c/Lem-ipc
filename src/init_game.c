@@ -16,15 +16,11 @@
 **	Init the map and clears it with zeros.
 */
 
-void	init_game(t_lemipc *lemipc)
+void			init_game(t_lemipc *lemipc)
 {
-	// Creates the segment.
 	init_shm_segment(lemipc);
-	
 	clear_map(lemipc->map);
-
 	init_semaphores(lemipc);
-	
 	init_msgq(lemipc);
 }
 

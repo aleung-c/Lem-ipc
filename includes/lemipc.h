@@ -50,13 +50,13 @@
 
 # define BOARD_WIDTH 20
 # define BOARD_HEIGHT 20
-# define SHM_MAP_KEY 4444
+# define SHM_MAP_KEY 4242
 # define SEM_KEY 4243
 # define MSG_SIZE 128
 
 # define SEARCH_SAMPLES 6
 
-# define MS_TURN_DELAY 100
+# define MS_TURN_DELAY 0
 
 /*
 ** ----- ncurse display defines
@@ -120,6 +120,7 @@ typedef struct				s_lemipc
 	int						*map;
 	int						sem_id;
 
+	int						winning_team;
 	int						*msgq_ids;
 
 	t_player				player;
@@ -152,6 +153,8 @@ void						lemipc();
 
 void						get_game_args(t_lemipc *lemipc, int argc,
 								char **argv);
+int							check_game_args(t_lemipc *lemipc);
+
 
 void						init_game(t_lemipc *lemipc);
 void						clear_map(int *map);
@@ -178,7 +181,8 @@ void						end_display(t_lemipc *lemipc);
 **	Game commands
 */
 
-int							move_toward(t_player *player, int *map, t_vec2 target_pos);
+int							move_toward(t_player *player, int *map,
+								t_vec2 target_pos);
 int							move_in_dir(t_player *player, int *map, t_dir dir);
 void						set_move_modifiers(int *x_move, int *y_move,
 								t_dir dir);
@@ -211,6 +215,10 @@ void						send_msg_to_team(t_lemipc *lemipc, char *msg_text);
 
 t_vec2						get_target(t_lemipc *lemipc);
 t_vec2						distance_search(t_lemipc *lemipc);
+int							stock_targets(t_lemipc *lemipc,
+								t_vec2 *found_targets, int x, int y);
+t_vec2						get_closest_target(t_lemipc *lemipc,
+								t_vec2 *found_targets, int i);
 
 /*
 **	Board tools - board_tools.c
@@ -229,9 +237,11 @@ int							is_point_in(t_lemipc *lemipc, int x, int y);
 int							get_distance(t_vec2 origine, t_vec2 destination);
 
 void						get_time(struct timespec *ts);
-struct timespec				timespec_diff(struct timespec *start, struct timespec *stop);
+struct timespec				timespec_diff(struct timespec *start,
+								struct timespec *stop);
 int							timespec_is_over(struct timespec time_end);
-void						add_nsec_to_timespec(struct timespec *time, long nanosec);
+void						add_nsec_to_timespec(struct timespec *time,
+								long nanosec);
 
 /*
 **	Semaphore handling.

@@ -41,10 +41,8 @@ void		get_values_around(t_lemipc *lemipc, int *points)
 	while (i != -1)
 	{
 		if (is_vec_point_in(lemipc, next_point))
-		{
 			points[y] = get_board_value(lemipc->map,
 				next_point.x, next_point.y);
-		}
 		else
 			points[y] = -1;
 		next_point.x += 1;
@@ -88,7 +86,7 @@ int			check_values_around(t_lemipc *lemipc, int *points)
 **	If not, then we win.
 */
 
-int		is_game_over(t_lemipc *lemipc)
+int			is_game_over(t_lemipc *lemipc)
 {
 	int		i;
 	int		single_team_found;
@@ -104,14 +102,14 @@ int		is_game_over(t_lemipc *lemipc)
 			&& lemipc->map[i] != -1)
 		{
 			single_team_found = 0;
-			// printf("team %d found %d\n",
-			// 	lemipc->player.team,
-			// 	lemipc->map[i]);
 			break ;
 		}
 		i++;
 	}
 	if (single_team_found == 1)
+	{
+		lemipc->winning_team = lemipc->player.team;
 		return (B_TRUE);
+	}
 	return (B_FALSE);
 }

@@ -23,11 +23,9 @@ void		init_msgq(t_lemipc *lemipc)
 		if ((lemipc->msgq_ids[i] = msgget(i + 1, IPC_CREAT | 0666)) == -1)
 		{
 			perror("init_msg: msgget: msgget failed");
+			clean_all();
 			exit(1);
 		}
 		i++;
 	}
-	printf(KYEL "%d msg queue(s) initialized.\n" KRESET, i);
 }
-
-

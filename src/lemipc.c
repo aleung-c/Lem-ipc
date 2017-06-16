@@ -16,30 +16,36 @@ void	lemipc(int argc, char **argv)
 {
 	get_game_args(&g_lemipc, argc, argv);
 	// TODO : protect against less cases than players.
+	if (check_game_args(&g_lemipc) == -1)
+		exit(-1);
 	g_lemipc.starter_pid = getpid();
 	init_game(&g_lemipc);
 	init_players(&g_lemipc);
-	// forked from here.
-	sleep(1);
+	usleep(30);
+	if (g_lemipc.is_parent == 1)
+	{
+		init_display(&g_lemipc);
+	}
 	while (1)
 	{
-		// start process displays board.
 		if (g_lemipc.is_parent == 1)
 		{
-			init_display(&g_lemipc);
 			display_game_board(&g_lemipc);
 		}
-		// but every process decides their moves.
 		if (is_game_over(&g_lemipc) == B_TRUE)
 			break ;
 		if (g_lemipc.player.is_dead == 0)
-		{
 			play_turn(&g_lemipc);
-		}
-		else if (g_lemipc.is_parent == 0)
+		else if (g_lemipc.player.is_dead == 1
+			&& g_lemipc.is_parent == 0)
 			break ;
 	}
 	if (g_lemipc.is_parent == 1)
 		end_display(&g_lemipc);
+	if (g_lemipc.winning_team != -1)
+	{
+		clear();
+		printf("Team #%d won!\n", g_lemipc.winning_team);
+	}
 	clean_all();
 }

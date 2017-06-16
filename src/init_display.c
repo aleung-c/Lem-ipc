@@ -37,8 +37,6 @@ void	init_display(t_lemipc *lemipc)
 
 void		display_game_board(t_lemipc *lemipc)
 {
-	static int			max_x;
-	static int			max_y;
 	int					x;
 	int					y;
 	int					end_y;
@@ -46,28 +44,15 @@ void		display_game_board(t_lemipc *lemipc)
 	x = 0;
 	y = 0;
 	end_y = BOARD_HEIGHT - 1;
-	getmaxyx(stdscr, max_x, max_y);
-	// if (max_x < (BOARD_WIDTH * 2) || max_y < (BOARD_HEIGHT * 2))
-	// {
-	// 	endwin();
-	// 	ft_putstr(KRED "Shellscreen too small! Resize please!\n" KRESET);
-		// exit(-1);
-	// }
-	// clear();
-
 	while (y != BOARD_HEIGHT)
 	{
 		while (x != BOARD_WIDTH)
 		{
 			if (lemipc->map[(end_y * BOARD_WIDTH) + x] == 0)
-			{
 				mvwaddch(lemipc->mainwin, y, x, EMPTY_CASE);
-			}
 			else
-			{
-				mvwaddstr(lemipc->mainwin, y, x,
-					ft_itoa(lemipc->map[(end_y * BOARD_WIDTH) + x]));
-			}
+				mvwaddch(lemipc->mainwin, y, x,
+					(96 + lemipc->map[(end_y * BOARD_WIDTH) + x]));
 			x++;
 		}
 		y++;

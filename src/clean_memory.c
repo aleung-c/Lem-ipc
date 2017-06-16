@@ -12,13 +12,14 @@
 
 #include "../includes/lemipc.h"
 
-// TODO: make shmctl() calls to determine if im the last to clean the ressources.
-
 void	clean_all()
 {
-	// lock_semaphore(g_lemipc.sem_id, 1);
-	shmdt(g_lemipc.map);
-	// unlock_semaphore(g_lemipc.sem_id, 1);
+	if (g_lemipc.map)
+	{
+		lock_semaphore(g_lemipc.sem_id, 1);
+		shmdt(g_lemipc.map);
+		unlock_semaphore(g_lemipc.sem_id, 1);
+	}
 	clean_semaphores();
 	clean_msgq();
 	clean_shm_segment();
@@ -28,7 +29,6 @@ void	clean_shm_segment()
 {
 	struct shmid_ds		buf;
 
-	
 	shmctl(g_lemipc.shm_id, IPC_STAT, &buf);
 	if (buf.shm_nattch == 0)
 	{
@@ -39,7 +39,6 @@ void	clean_shm_segment()
 
 void	clean_semaphores()
 {
-	// int		sem_id;
 	struct shmid_ds		buf;
 
 	shmctl(g_lemipc.shm_id, IPC_STAT, &buf);
@@ -52,8 +51,8 @@ void	clean_semaphores()
 
 void	clean_msgq()
 {
-	int		i;
-	int		msgq_id;
+	int					i;
+	int					msgq_id;
 	struct shmid_ds		buf;
 
 	shmctl(g_lemipc.shm_id, IPC_STAT, &buf);
@@ -63,17 +62,9 @@ void	clean_msgq()
 		while (i < g_lemipc.nb_team)
 		{
 			if ((msgq_id = msgget(i + 1, 0666)) != -1)
-			{
 				msgctl(msgq_id, IPC_RMID, NULL);
-			}
 			i++;
 		}
 		printf(KGRN "- Message queue memory cleaned!\n" KRESET);
 	}
-}
-
-void	kill_cur_process()
-{
-	// shmdt(g_lemipc.map);
-	// exit(0);
 }

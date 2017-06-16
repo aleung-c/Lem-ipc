@@ -21,14 +21,12 @@ void	init_players(t_lemipc *lemipc)
 	team_i = 0;
 	player_i = 1;
 	i = 0;
-	// init first player.
 	srand(time(NULL) ^ (getpid() << 16));
 	init_cur_player(lemipc, 1, 1);
 	get_time(&lemipc->turn_delay);
 	add_nsec_to_timespec(&lemipc->turn_delay, 
 		MS_TURN_DELAY * 1000000);
 	lemipc->is_parent = 1;
-	// init all the others.
 	while (team_i < lemipc->nb_team)
 	{
 		while (player_i < lemipc->nb_player_per_team[team_i])
@@ -51,6 +49,7 @@ void	init_players(t_lemipc *lemipc)
 			else
 			{
 				perror("Fork");
+				clean_all();
 				exit(-1);
 			}
 			player_i++;
@@ -115,6 +114,7 @@ t_vec2		set_player_spawn_position(t_lemipc *lemipc)
 void		init_player_variables(t_player *player, int team,
 									int nb, t_vec2 spawn_pos)
 {
+	g_lemipc.winning_team = -1;
 	player->is_dead = 0;
 	player->team = team;
 	player->nb = nb;

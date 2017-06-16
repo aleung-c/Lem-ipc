@@ -17,11 +17,11 @@ char		*check_communications(t_lemipc *lemipc)
 	t_message		*msg;
 	long			msg_type;
 	int				result;
-	
+
 	msg_type = 0;
 	msg = (t_message *)malloc(sizeof(t_message));
 	result = msgrcv(lemipc->msgq_ids[lemipc->player.team],
-		(void *) msg, sizeof(msg->text),
+		(void *)msg, sizeof(msg->text),
 		msg_type, MSG_NOERROR | IPC_NOWAIT);
 	if (result == -1)
 		return (NULL);
@@ -63,14 +63,13 @@ void		send_msg_to_team(t_lemipc *lemipc, char *msg_text)
 	long			msg_type;
 
 	msg_type = 1;
-
 	if (ft_strlen(msg_text) > MSG_SIZE)
 	{
 		ft_putendl("Error: Message too long for queue");
-		exit (-1);
+		clean_all();
+		exit(-1);
 	}
 	ft_strncpy(msg.text, msg_text, MSG_SIZE);
-
 	msgsnd(lemipc->msgq_ids[lemipc->player.team],
 		&msg, MSG_SIZE, IPC_NOWAIT);
 }

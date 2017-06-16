@@ -33,17 +33,18 @@ t_vec2					get_target(t_lemipc *lemipc)
 
 t_vec2					distance_search(t_lemipc *lemipc)
 {
-	int			x;
-	int			y;
+	int			i;
+	t_vec2		found_targets[SEARCH_SAMPLES];
+
+	i = stock_targets(lemipc, &found_targets[0], 0, 0);
+	return (get_closest_target(lemipc, found_targets, i));
+}
+
+int		stock_targets(t_lemipc *lemipc, t_vec2 *found_targets, int x, int y)
+{
 	int			i;
 	int			cur_value;
-	int			min_dist;
-	int			cur_dist;
-	t_vec2		found_targets[SEARCH_SAMPLES];
-	t_vec2		closest_target;
 
-	x = 0;
-	y = 0;
 	i = 0;
 	while (y != BOARD_HEIGHT)
 	{
@@ -65,8 +66,16 @@ t_vec2					distance_search(t_lemipc *lemipc)
 		if (i == SEARCH_SAMPLES)
 			break ;
 	}
+	return (i);
+}
 
-	// now get the closest from the found targets
+t_vec2		get_closest_target(t_lemipc *lemipc, t_vec2 *found_targets, int i)
+{
+	int			x;
+	int			min_dist;
+	int			cur_dist;
+	t_vec2		closest_target;
+
 	x = 0;
 	min_dist = BOARD_HEIGHT * BOARD_WIDTH;
 	while (x != i)
