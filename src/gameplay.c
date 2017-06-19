@@ -13,7 +13,7 @@
 #include "../includes/lemipc.h"
 
 // TODO: When player 1 1 dies, display is taken off....
-// Also, on speed 0, the memory is not freed.
+// Also, on speed 0, team 1 thinks it wins, because it appears first.
 
 void		play_turn(t_lemipc *lemipc)
 {

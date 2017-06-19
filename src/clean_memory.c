@@ -14,12 +14,12 @@
 
 void	clean_all()
 {
-	if (g_lemipc.map)
-	{
-		lock_semaphore(g_lemipc.sem_id, 1);
+	// if (g_lemipc.map)
+	// {
+		// lock_semaphore(g_lemipc.sem_id, 1);
 		shmdt(g_lemipc.map);
-		unlock_semaphore(g_lemipc.sem_id, 1);
-	}
+		// unlock_semaphore(g_lemipc.sem_id, 1);
+	// }
 	clean_semaphores();
 	clean_msgq();
 	clean_shm_segment();
@@ -33,8 +33,10 @@ void	clean_shm_segment()
 	if (buf.shm_nattch == 0)
 	{
 		shmctl(g_lemipc.shm_id, IPC_RMID, NULL);
+		shmctl(g_lemipc.init_shm_id, IPC_RMID, NULL);
 		printf(KGRN "- Shared memory cleaned!\n" KRESET);
 	}
+
 }
 
 void	clean_semaphores()
@@ -45,6 +47,7 @@ void	clean_semaphores()
 	if (buf.shm_nattch == 0)
 	{
 		semctl(g_lemipc.sem_id, 1, IPC_RMID, NULL);
+		semctl(g_lemipc.init_sem_id, 1, IPC_RMID, NULL);
 		printf(KGRN "- Semaphore memory cleaned!\n" KRESET);
 	}
 }

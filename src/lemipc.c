@@ -20,10 +20,18 @@ void	lemipc(int argc, char **argv)
 		exit(-1);
 	g_lemipc.starter_pid = getpid();
 	init_game(&g_lemipc);
-	lock_semaphore(g_lemipc.sem_id, 1);
+	lock_semaphore(g_lemipc.init_sem_id, 1);
 	init_players(&g_lemipc);
-	unlock_semaphore(g_lemipc.sem_id, 1);
-	// usleep(30);
+	if (g_lemipc.is_parent == 1)
+	{
+		// *g_lemipc.game_started = 1;
+		unlock_semaphore(g_lemipc.init_sem_id, 1);
+	}
+	else
+	{
+		lock_semaphore(g_lemipc.init_sem_id, 1);
+		unlock_semaphore(g_lemipc.init_sem_id, 1);
+	}
 	if (g_lemipc.is_parent == 1)
 	{
 		init_display(&g_lemipc);
@@ -34,13 +42,16 @@ void	lemipc(int argc, char **argv)
 		{
 			display_game_board(&g_lemipc);
 		}
-		if (g_lemipc.player.is_dead == 0)
-			play_turn(&g_lemipc);
-		else if (g_lemipc.player.is_dead == 1
-			&& g_lemipc.is_parent == 0)
-			break ;
-		if (is_game_over(&g_lemipc) == B_TRUE)
-			break ;
+		if (*g_lemipc.game_started == 1)
+		{
+			if (g_lemipc.player.is_dead == 0)
+				play_turn(&g_lemipc);
+			else if (g_lemipc.player.is_dead == 1
+				&& g_lemipc.is_parent == 0)
+				break ;
+			if (is_game_over(&g_lemipc) == B_TRUE)
+				break ;
+		}
 	}
 	if (g_lemipc.is_parent == 1)
 		end_display(&g_lemipc);

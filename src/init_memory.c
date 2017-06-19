@@ -35,6 +35,21 @@ void		init_shm_segment(t_lemipc *lemipc)
 		clean_all();
 		exit(1);
 	}
+
+	lemipc->init_shm_id = shmget(SHM_MAP_KEY2, sizeof(int),
+		IPC_CREAT | IPC_EXCL | 0666);
+	if (lemipc->init_shm_id < 0)
+	{
+		perror("init_board: shmget");
+		clean_all();
+		exit(1);
+	}
+	if ((lemipc->game_started = shmat(lemipc->init_shm_id, NULL, 0)) == (int *)-1)
+	{
+		perror("init_board: shmat");
+		clean_all();
+		exit(1);
+	}
 }
 
 void		init_semaphores(t_lemipc *lemipc)
@@ -42,7 +57,14 @@ void		init_semaphores(t_lemipc *lemipc)
 	lemipc->sem_id = semget(SEM_KEY, 1, IPC_CREAT | IPC_EXCL | SHM_R | SHM_W);
 	if (lemipc->sem_id == -1)
 	{
-		perror("init_semaphores: semget");
+		perror("init_semaphores board sem: semget");
+		clean_all();
+		exit (-1);
+	}
+	lemipc->init_sem_id = semget(SEM_KEY2, 1, IPC_CREAT | IPC_EXCL | SHM_R | SHM_W);
+	if (lemipc->init_sem_id == -1)
+	{
+		perror("init_semaphores init_sem: semget");
 		clean_all();
 		exit (-1);
 	}

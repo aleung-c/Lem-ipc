@@ -50,13 +50,16 @@
 
 # define BOARD_WIDTH 20
 # define BOARD_HEIGHT 20
+
 # define SHM_MAP_KEY 4242
+# define SHM_MAP_KEY2 4343
 # define SEM_KEY 1234
+# define SEM_KEY2 2345
 # define MSG_SIZE 128
 
 # define SEARCH_SAMPLES 6
 
-# define MS_TURN_DELAY 0
+# define MS_TURN_DELAY 150
 
 /*
 ** ----- ncurse display defines
@@ -118,7 +121,12 @@ typedef struct				s_lemipc
 
 	int						shm_id;
 	int						*map;
+
+	int						init_shm_id;
+	int						*game_started;
+
 	int						sem_id;
+	int						init_sem_id;
 
 	int						winning_team;
 	int						*msgq_ids;

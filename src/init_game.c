@@ -19,6 +19,7 @@
 void			init_game(t_lemipc *lemipc)
 {
 	init_shm_segment(lemipc);
+	*lemipc->game_started = 0;
 	clear_map(lemipc->map);
 	init_semaphores(lemipc);
 	init_msgq(lemipc);

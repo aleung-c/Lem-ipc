@@ -36,6 +36,7 @@ void	init_players(t_lemipc *lemipc)
 			{
 				if (lemipc->pid == 0)
 				{
+					unlock_semaphore(g_lemipc.init_sem_id, 1);
 					lemipc->is_parent = 0;
 					srand(time(NULL) ^ (getpid() << 16));
 					get_time(&lemipc->turn_delay);
@@ -77,6 +78,11 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 	set_board_value(lemipc->map, lemipc->player.pos.x,
 						lemipc->player.pos.y, lemipc->player.team);
 	unlock_semaphore(lemipc->sem_id, 1);
+
+	if (team == lemipc->nb_team && nb == lemipc->nb_player_per_team[lemipc->nb_team - 1])
+	{
+		*lemipc->game_started = 1;
+	}
 
 	// debug print.
 	// ft_putendl(KGRN "player joined:" KRESET);
