@@ -14,12 +14,9 @@
 
 void	clean_all()
 {
-	// if (g_lemipc.map)
-	// {
-		// lock_semaphore(g_lemipc.sem_id, 1);
-		shmdt(g_lemipc.map);
-		// unlock_semaphore(g_lemipc.sem_id, 1);
-	// }
+	lock_semaphore(g_lemipc.sem_id, 1);
+	shmdt(g_lemipc.map);
+	unlock_semaphore(g_lemipc.sem_id, 1);
 	clean_semaphores();
 	clean_msgq();
 	clean_shm_segment();
@@ -47,7 +44,6 @@ void	clean_semaphores()
 	if (buf.shm_nattch == 0)
 	{
 		semctl(g_lemipc.sem_id, 1, IPC_RMID, NULL);
-		semctl(g_lemipc.init_sem_id, 1, IPC_RMID, NULL);
 		printf(KGRN "- Semaphore memory cleaned!\n" KRESET);
 	}
 }

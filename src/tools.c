@@ -102,3 +102,13 @@ void			add_nsec_to_timespec(struct timespec *time, long nanosec)
 		time->tv_sec += 1;
 	}
 }
+
+void			add_delay_time(t_lemipc *lemipc)
+{
+	static int	delay_val;
+
+	delay_val = MS_TURN_DELAY;
+	get_time(&lemipc->turn_delay);
+	add_nsec_to_timespec(&lemipc->turn_delay, 
+		delay_val * 1000000);
+}

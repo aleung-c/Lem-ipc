@@ -45,17 +45,26 @@ int		check_game_args(t_lemipc *lemipc)
 {
 	int		i;
 	int		player_count;
+	int		found_team_of_two;
 
 	i = 0;
 	player_count = 0;
+	found_team_of_two = 0;
 	while (i < lemipc->nb_team)
 	{
 		player_count += lemipc->nb_player_per_team[i];
+		if (lemipc->nb_player_per_team[i] >= 2)
+			found_team_of_two = 1;
 		i++;
 	}
-	if (player_count > (BOARD_WIDTH * BOARD_HEIGHT))
+	if (player_count >= (BOARD_WIDTH * BOARD_HEIGHT))
 	{
 		ft_putendl(KRED "Error: More player than map area" KRESET);
+		return (-1);
+	}
+	if (found_team_of_two == 0)
+	{
+		ft_putendl(KRED "Error: One team should have two players" KRESET);
 		return (-1);
 	}
 	return (0);

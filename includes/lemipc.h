@@ -45,11 +45,20 @@
 # define KRESET "\x1B[0m"
 
 /*
-** ----- Game defines
+** --------------- CONTROL VALUES --------------- //
 */
 
 # define BOARD_WIDTH 20
 # define BOARD_HEIGHT 20
+# define MS_TURN_DELAY 200
+
+/*
+** --------------- CONTROL VALUES --------------- //
+*/
+
+/*
+** ----- Game defines
+*/
 
 # define SHM_MAP_KEY 4242
 # define SHM_MAP_KEY2 4343
@@ -59,7 +68,7 @@
 
 # define SEARCH_SAMPLES 6
 
-# define MS_TURN_DELAY 150
+
 
 /*
 ** ----- ncurse display defines
@@ -126,7 +135,6 @@ typedef struct				s_lemipc
 	int						*game_started;
 
 	int						sem_id;
-	int						init_sem_id;
 
 	int						winning_team;
 	int						*msgq_ids;
@@ -158,6 +166,9 @@ t_lemipc					g_lemipc;
 void						sig_handler(int signo);
 
 void						lemipc();
+void						lemipc_init(int argc, char **argv);
+void						lemipc_main_loop(t_lemipc *lemipc);
+void						lemipc_on_end(t_lemipc *lemipc);
 
 void						get_game_args(t_lemipc *lemipc, int argc,
 								char **argv);
@@ -250,6 +261,7 @@ struct timespec				timespec_diff(struct timespec *start,
 int							timespec_is_over(struct timespec time_end);
 void						add_nsec_to_timespec(struct timespec *time,
 								long nanosec);
+void						add_delay_time(t_lemipc *lemipc);
 
 /*
 **	Semaphore handling.
@@ -269,6 +281,7 @@ void						init_msgq(t_lemipc *lemipc);
 */
 
 void						init_shm_segment(t_lemipc *lemipc);
+void						init_shm_segment_flag(t_lemipc *lemipc);
 void						init_semaphores(t_lemipc *lemipc);
 
 /*

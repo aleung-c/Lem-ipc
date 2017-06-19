@@ -14,51 +14,56 @@
 
 void	lemipc(int argc, char **argv)
 {
+	lemipc_init(argc, argv);
+	lemipc_main_loop(&g_lemipc);
+	lemipc_on_end(&g_lemipc);
+}
+
+/*
+**	First function for lemipc main body.
+*/
+
+void	lemipc_init(int argc, char **argv)
+{
 	get_game_args(&g_lemipc, argc, argv);
-	// TODO : protect against less cases than players.
 	if (check_game_args(&g_lemipc) == -1)
 		exit(-1);
 	g_lemipc.starter_pid = getpid();
 	init_game(&g_lemipc);
-	lock_semaphore(g_lemipc.init_sem_id, 1);
 	init_players(&g_lemipc);
 	if (g_lemipc.is_parent == 1)
-	{
-		// *g_lemipc.game_started = 1;
-		unlock_semaphore(g_lemipc.init_sem_id, 1);
-	}
-	else
-	{
-		lock_semaphore(g_lemipc.init_sem_id, 1);
-		unlock_semaphore(g_lemipc.init_sem_id, 1);
-	}
-	if (g_lemipc.is_parent == 1)
-	{
 		init_display(&g_lemipc);
-	}
+}
+
+void	lemipc_main_loop(t_lemipc *lemipc)
+{
 	while (1)
 	{
-		if (g_lemipc.is_parent == 1)
+		if (lemipc->is_parent == 1)
+			display_game_board(lemipc);
+		if (*lemipc->game_started == 1)
 		{
-			display_game_board(&g_lemipc);
-		}
-		if (*g_lemipc.game_started == 1)
-		{
-			if (g_lemipc.player.is_dead == 0)
-				play_turn(&g_lemipc);
-			else if (g_lemipc.player.is_dead == 1
-				&& g_lemipc.is_parent == 0)
+			if (lemipc->player.is_dead == 0)
+				play_turn(lemipc);
+			else if (lemipc->player.is_dead == 1
+				&& lemipc->is_parent == 0)
 				break ;
-			if (is_game_over(&g_lemipc) == B_TRUE)
+			if (is_game_over(lemipc) == B_TRUE)
 				break ;
 		}
 	}
-	if (g_lemipc.is_parent == 1)
-		end_display(&g_lemipc);
-	if (g_lemipc.winning_team != -1)
+}
+
+void	lemipc_on_end(t_lemipc *lemipc)
+{
+	if (lemipc->is_parent == 1)
+		end_display(lemipc);
+	if (lemipc->winning_team != -1)
 	{
 		clear();
-		printf("Team #%d won!\n", g_lemipc.winning_team);
+		ft_putstr("Team #");
+		ft_putnbr(lemipc->winning_team);
+		ft_putendl(" won!");
 	}
 	clean_all();
 }

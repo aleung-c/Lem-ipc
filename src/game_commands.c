@@ -12,7 +12,7 @@
 
 #include "../includes/lemipc.h"
 
-int		move_toward(t_player *player, int *map, t_vec2 target_pos)
+int			move_toward(t_player *player, int *map, t_vec2 target_pos)
 {
 	t_dir dir;
 
@@ -29,60 +29,38 @@ int		move_toward(t_player *player, int *map, t_vec2 target_pos)
 
 t_dir		find_dir(t_vec2 origine, int *map, t_vec2 target_pos)
 {
-	int		base_distance;
-	t_vec2	simulated_point;
+	int			base_distance;
+	t_vec2		simulated_point;
 
 	base_distance = get_distance(origine, target_pos);
-
 	simulated_point = origine;
 	simulated_point.x -= 1;
 	if (is_vec_point_in(NULL, simulated_point)
 	&& get_board_value(map, simulated_point.x, simulated_point.y) == 0
 	&& get_distance(simulated_point, target_pos) <= base_distance)
 		return (LEFT);
-
 	simulated_point = origine;
 	simulated_point.x += 1;
 	if (is_vec_point_in(NULL, simulated_point)
 	&& get_board_value(map, simulated_point.x, simulated_point.y) == 0
 	&& get_distance(simulated_point, target_pos) <= base_distance)
 		return (RIGHT);
-
 	simulated_point = origine;
 	simulated_point.y -= 1;
 	if (is_vec_point_in(NULL, simulated_point)
 	&& get_board_value(map, simulated_point.x, simulated_point.y) == 0
 	&& get_distance(simulated_point, target_pos) <= base_distance)
 		return (DOWN);
-
 	simulated_point = origine;
 	simulated_point.y += 1;
 	if (is_vec_point_in(NULL, simulated_point)
 	&& get_board_value(map, simulated_point.x, simulated_point.y) == 0
 	&& get_distance(simulated_point, target_pos) <= base_distance)
 		return (UP);
-
-	// old simple way.
-	// if (origine.x < target_pos.x)
-	// {
-	// 	return (RIGHT);
-	// }
-	// else if (origine.x > target_pos.x)
-	// {
-	// 	return (LEFT);
-	// }
-	// if (origine.y < target_pos.y)
-	// {
-	// 	return (UP);
-	// }
-	// else if (origine.y > target_pos.y)
-	// {
-	// 	return (DOWN);
-	// }
 	return (rand() % 4);
 }
 
-int		move_in_dir(t_player *player, int *map, t_dir dir)
+int			move_in_dir(t_player *player, int *map, t_dir dir)
 {
 	int			y_move;
 	int			x_move;
@@ -103,7 +81,6 @@ int		move_in_dir(t_player *player, int *map, t_dir dir)
 	}
 	else
 	{
-		// printf("player cant move there\n");
 		return (0);
 	}
 }

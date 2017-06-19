@@ -12,7 +12,7 @@
 
 #include "../includes/lemipc.h"
 
-void	init_display(t_lemipc *lemipc)
+void		init_display(t_lemipc *lemipc)
 {
 	int			max_x;
 	int			max_y;
@@ -64,7 +64,6 @@ void		display_game_board(t_lemipc *lemipc)
 
 void		end_display(t_lemipc *lemipc)
 {
-    delwin(lemipc->mainwin);
-    endwin();
-    // refresh();
+	delwin(lemipc->mainwin);
+	endwin();
 }

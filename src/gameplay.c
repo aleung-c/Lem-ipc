@@ -17,10 +17,6 @@
 
 void		play_turn(t_lemipc *lemipc)
 {
-	// char			*msg;
-	int				move_ret;
-	// t_vec2			target;
-
 	// steps:
 	// ----- check if im dead.
 	lock_semaphore(lemipc->sem_id, 1);
@@ -65,7 +61,7 @@ void		play_turn(t_lemipc *lemipc)
 
 			// moving toward the target.
 			lock_semaphore(lemipc->sem_id, 1);
-			move_ret = move_toward(&lemipc->player, lemipc->map, lemipc->player.target_pos);
+			move_toward(&lemipc->player, lemipc->map, lemipc->player.target_pos);
 			unlock_semaphore(lemipc->sem_id, 1);
 
 			// if available and pinning down an enemy, ill call for help.

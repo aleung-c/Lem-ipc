@@ -23,9 +23,7 @@ void	init_players(t_lemipc *lemipc)
 	i = 0;
 	srand(time(NULL) ^ (getpid() << 16));
 	init_cur_player(lemipc, 1, 1);
-	get_time(&lemipc->turn_delay);
-	add_nsec_to_timespec(&lemipc->turn_delay, 
-		MS_TURN_DELAY * 1000000);
+	add_delay_time(lemipc);
 	lemipc->is_parent = 1;
 	while (team_i < lemipc->nb_team)
 	{
@@ -36,12 +34,9 @@ void	init_players(t_lemipc *lemipc)
 			{
 				if (lemipc->pid == 0)
 				{
-					unlock_semaphore(g_lemipc.init_sem_id, 1);
 					lemipc->is_parent = 0;
 					srand(time(NULL) ^ (getpid() << 16));
-					get_time(&lemipc->turn_delay);
-					add_nsec_to_timespec(&lemipc->turn_delay, 
-						MS_TURN_DELAY * 1000000);
+					add_delay_time(lemipc);
 					init_cur_player(lemipc, team_i + 1, player_i + 1);
 					i++;
 					break ;
@@ -83,16 +78,6 @@ void	init_cur_player(t_lemipc *lemipc, int team, int nb)
 	{
 		*lemipc->game_started = 1;
 	}
-
-	// debug print.
-	// ft_putendl(KGRN "player joined:" KRESET);
-	// ft_putstr("team ");
-	// ft_putnbr(lemipc->player.team);
-	// ft_putstr("\nnumber ");
-	// ft_putnbr(lemipc->player.nb);
-	// ft_putchar('\n');
-	// printf("pos = %dx %dy\n", lemipc->player.pos.x, lemipc->player.pos.y);
-	// ft_putchar('\n');
 }
 
 t_vec2		set_player_spawn_position(t_lemipc *lemipc)
