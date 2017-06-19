@@ -51,7 +51,7 @@
 # define BOARD_WIDTH 20
 # define BOARD_HEIGHT 20
 # define SHM_MAP_KEY 4242
-# define SEM_KEY 4243
+# define SEM_KEY 1234
 # define MSG_SIZE 128
 
 # define SEARCH_SAMPLES 6

@@ -39,7 +39,7 @@ void		init_shm_segment(t_lemipc *lemipc)
 
 void		init_semaphores(t_lemipc *lemipc)
 {
-	lemipc->sem_id = semget(IPC_PRIVATE, 1, SHM_R | SHM_W);
+	lemipc->sem_id = semget(SEM_KEY, 1, IPC_CREAT | IPC_EXCL | SHM_R | SHM_W);
 	if (lemipc->sem_id == -1)
 	{
 		perror("init_semaphores: semget");
