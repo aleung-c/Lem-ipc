@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #ifndef LEMIPC_H
 # define LEMIPC_H
 
@@ -18,7 +17,6 @@
 # include <sys/shm.h>
 # include <sys/sem.h>
 # include <sys/msg.h>
-# include <stdio.h> //
 # include <errno.h>
 # include <curses.h>
 # include <time.h>
@@ -50,7 +48,7 @@
 
 # define BOARD_WIDTH 20
 # define BOARD_HEIGHT 20
-# define MS_TURN_DELAY 200
+# define MS_TURN_DELAY 150
 
 /*
 ** --------------- CONTROL VALUES --------------- //
@@ -68,8 +66,6 @@
 
 # define SEARCH_SAMPLES 6
 
-
-
 /*
 ** ----- ncurse display defines
 */
@@ -84,10 +80,10 @@ typedef enum				e_bool
 
 typedef enum				e_dir
 {
-							UP,
-							RIGHT,
-							DOWN,
-							LEFT
+	UP,
+	RIGHT,
+	DOWN,
+	LEFT
 }							t_dir;
 
 /*
@@ -96,8 +92,8 @@ typedef enum				e_dir
 
 typedef struct				s_message
 {
-    long					type;
-    char					text[MSG_SIZE];
+	long					type;
+	char					text[MSG_SIZE];
 }							t_message;
 
 typedef struct				s_vec2
@@ -174,7 +170,6 @@ void						get_game_args(t_lemipc *lemipc, int argc,
 								char **argv);
 int							check_game_args(t_lemipc *lemipc);
 
-
 void						init_game(t_lemipc *lemipc);
 void						clear_map(int *map);
 
@@ -183,6 +178,8 @@ void						clear_map(int *map);
 */
 
 void						init_players(t_lemipc *lemipc);
+int							fork_from_parent(t_lemipc *lemipc,
+								int team_i, int player_i);
 void						init_cur_player(t_lemipc *lemipc, int team, int nb);
 t_vec2						set_player_spawn_position(t_lemipc *lemipc);
 void						init_player_variables(t_player *player, int team,
@@ -211,13 +208,19 @@ void						get_values_around(t_lemipc *lemipc, int *points);
 int							check_values_around(t_lemipc *lemipc, int *points);
 int							is_game_over(t_lemipc *lemipc);
 
-t_dir						find_dir(t_vec2 origine, int *map, t_vec2 target_pos);
+t_dir						find_dir(t_vec2 origine,
+								int *map, t_vec2 target_pos);
+void						set_simulated_point(t_vec2 origine,
+								t_vec2 *simulated_point, t_dir dir);
 
 /*
 **	Gameplay
 */
 
 void						play_turn(t_lemipc *lemipc);
+void						check_for_team_comms(t_lemipc *lemipc);
+void						movement_action(t_lemipc *lemipc);
+void						after_move_behavior(t_lemipc *lemipc);
 
 /*
 **	Team Management
@@ -225,7 +228,6 @@ void						play_turn(t_lemipc *lemipc);
 
 char						*check_communications(t_lemipc *lemipc);
 void						call_team(t_lemipc *lemipc, t_vec2 target);
-t_vec2						set_target_from_msg(t_lemipc *lemipc, char *msg);
 void						send_msg_to_team(t_lemipc *lemipc, char *msg_text);
 
 /*
@@ -238,6 +240,8 @@ int							stock_targets(t_lemipc *lemipc,
 								t_vec2 *found_targets, int x, int y);
 t_vec2						get_closest_target(t_lemipc *lemipc,
 								t_vec2 *found_targets, int i);
+t_vec2						set_target_from_msg(t_lemipc *lemipc, char *msg);
+void						parse_target_msg(char *msg, t_vec2 *ret);
 
 /*
 **	Board tools - board_tools.c

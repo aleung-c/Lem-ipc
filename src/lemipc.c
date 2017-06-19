@@ -12,6 +12,10 @@
 
 #include "../includes/lemipc.h"
 
+/*
+**	First function for lemipc main body.
+*/
+
 void	lemipc(int argc, char **argv)
 {
 	lemipc_init(argc, argv);
@@ -20,7 +24,9 @@ void	lemipc(int argc, char **argv)
 }
 
 /*
-**	First function for lemipc main body.
+**	The Initialization part of the lemipc.
+**	We init the memory, the players, and the display.
+**	The fork() occurs here in init_players().
 */
 
 void	lemipc_init(int argc, char **argv)
@@ -34,6 +40,13 @@ void	lemipc_init(int argc, char **argv)
 	if (g_lemipc.is_parent == 1)
 		init_display(&g_lemipc);
 }
+
+// TODO: When player 1 1 dies, display is taken off....
+
+/*
+**	The main loop for the program. Start when everything is
+**	initialized and ready to roll.
+*/
 
 void	lemipc_main_loop(t_lemipc *lemipc)
 {
@@ -54,10 +67,18 @@ void	lemipc_main_loop(t_lemipc *lemipc)
 	}
 }
 
+/*
+**	The last part of the program.
+**	Very important as the ipcs DO NOT clean
+**	themselves in on the system.
+*/
+
 void	lemipc_on_end(t_lemipc *lemipc)
 {
 	if (lemipc->is_parent == 1)
+	{
 		end_display(lemipc);
+	}
 	if (lemipc->winning_team != -1)
 	{
 		clear();

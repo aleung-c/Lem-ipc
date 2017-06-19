@@ -21,8 +21,8 @@ int			move_toward(t_player *player, int *map, t_vec2 target_pos)
 }
 
 /*
-**	To find the direction for the target, I made a beginning of 
-**	A star search algorithm. I only check the distance to the 
+**	To find the direction for the target, I made a beginning of
+**	A star search algorithm. I only check the distance to the
 **	the target for a single depth from the current position.
 **	And when in doubt, I throw some random values.
 */
@@ -33,31 +33,41 @@ t_dir		find_dir(t_vec2 origine, int *map, t_vec2 target_pos)
 	t_vec2		simulated_point;
 
 	base_distance = get_distance(origine, target_pos);
-	simulated_point = origine;
-	simulated_point.x -= 1;
+	set_simulated_point(origine, &simulated_point, LEFT);
 	if (is_vec_point_in(NULL, simulated_point)
 	&& get_board_value(map, simulated_point.x, simulated_point.y) == 0
 	&& get_distance(simulated_point, target_pos) <= base_distance)
 		return (LEFT);
-	simulated_point = origine;
-	simulated_point.x += 1;
+	set_simulated_point(origine, &simulated_point, RIGHT);
 	if (is_vec_point_in(NULL, simulated_point)
 	&& get_board_value(map, simulated_point.x, simulated_point.y) == 0
 	&& get_distance(simulated_point, target_pos) <= base_distance)
 		return (RIGHT);
-	simulated_point = origine;
-	simulated_point.y -= 1;
+	set_simulated_point(origine, &simulated_point, DOWN);
 	if (is_vec_point_in(NULL, simulated_point)
 	&& get_board_value(map, simulated_point.x, simulated_point.y) == 0
 	&& get_distance(simulated_point, target_pos) <= base_distance)
 		return (DOWN);
-	simulated_point = origine;
-	simulated_point.y += 1;
+	set_simulated_point(origine, &simulated_point, UP);
 	if (is_vec_point_in(NULL, simulated_point)
 	&& get_board_value(map, simulated_point.x, simulated_point.y) == 0
 	&& get_distance(simulated_point, target_pos) <= base_distance)
 		return (UP);
 	return (rand() % 4);
+}
+
+void		set_simulated_point(t_vec2 origine, t_vec2 *simulated_point,
+									t_dir dir)
+{
+	*simulated_point = origine;
+	if (dir == LEFT)
+		simulated_point->x -= 1;
+	else if (dir == RIGHT)
+		simulated_point->x += 1;
+	else if (dir == DOWN)
+		simulated_point->y -= 1;
+	else if (dir == UP)
+		simulated_point->y += 1;
 }
 
 int			move_in_dir(t_player *player, int *map, t_dir dir)

@@ -12,17 +12,15 @@
 
 #include "../includes/lemipc.h"
 
-t_vec2					get_target(t_lemipc *lemipc)
+t_vec2		get_target(t_lemipc *lemipc)
 {
 	t_vec2		target;
 
-	(void)lemipc;
 	target.x = -1;
 	target.y = -1;
 	target = distance_search(lemipc);
 	target.x += rand() % 1;
 	target.y += rand() % 1;
-	// printf("target at: %dx %dy\n", target.x, target.y);
 	return (target);
 }
 
@@ -31,7 +29,7 @@ t_vec2					get_target(t_lemipc *lemipc)
 **	from the enemy to the player. the closer one shall be my target to attack.
 */
 
-t_vec2					distance_search(t_lemipc *lemipc)
+t_vec2		distance_search(t_lemipc *lemipc)
 {
 	int			i;
 	t_vec2		found_targets[SEARCH_SAMPLES];
@@ -40,7 +38,13 @@ t_vec2					distance_search(t_lemipc *lemipc)
 	return (get_closest_target(lemipc, found_targets, i));
 }
 
-int		stock_targets(t_lemipc *lemipc, t_vec2 *found_targets, int x, int y)
+/*
+**	In here, ill stock the all viables targets for the player,
+**	but no more than SEARCH_SAMPLES value. We dont need all
+**	targets.
+*/
+
+int			stock_targets(t_lemipc *lemipc, t_vec2 *found_targets, int x, int y)
 {
 	int			i;
 	int			cur_value;
@@ -69,6 +73,10 @@ int		stock_targets(t_lemipc *lemipc, t_vec2 *found_targets, int x, int y)
 	return (i);
 }
 
+/*
+**	For each previously stocked target, ill extract the closest one.
+*/
+
 t_vec2		get_closest_target(t_lemipc *lemipc, t_vec2 *found_targets, int i)
 {
 	int			x;
@@ -91,15 +99,19 @@ t_vec2		get_closest_target(t_lemipc *lemipc, t_vec2 *found_targets, int i)
 	return (closest_target);
 }
 
+/*
+**	This one is used for when I receive a message that
+**	require assistance ==> parse the msg and create a position.
+**
+**	However, if the sender is myself(read too fast), I send the
+**	msg back on te msg queue.
+*/
+
 t_vec2		set_target_from_msg(t_lemipc *lemipc, char *msg)
 {
-	int		i;
-	int		msg_len;
-	t_vec2	ret;
-	int		msg_sender;
+	t_vec2		ret;
+	int			msg_sender;
 
-	i = 0;
-	msg_len = ft_strlen(msg);
 	ret.x = -1;
 	ret.y = -1;
 	msg_sender = ft_atoi(msg);
@@ -107,20 +119,8 @@ t_vec2		set_target_from_msg(t_lemipc *lemipc, char *msg)
 	{
 		send_msg_to_team(lemipc, msg);
 		msg = NULL;
-		return ret;
+		return (ret);
 	}
-	while (i != msg_len)
-	{
-		if (msg[i] == ' ' && msg[i + 1])
-		{
-			if (ret.x == -1)
-				ret.x = ft_atoi(&msg[i + 1]);
-			else
-				ret.y = ft_atoi(&msg[i + 1]);
-		}
-		i++;
-	}
+	parse_target_msg(msg, &ret);
 	return (ret);
 }
-
-

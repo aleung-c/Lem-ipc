@@ -12,7 +12,7 @@
 
 #include "../includes/lemipc.h"
 
-void	clean_all()
+void	clean_all(void)
 {
 	lock_semaphore(g_lemipc.sem_id, 1);
 	shmdt(g_lemipc.map);
@@ -22,7 +22,7 @@ void	clean_all()
 	clean_shm_segment();
 }
 
-void	clean_shm_segment()
+void	clean_shm_segment(void)
 {
 	struct shmid_ds		buf;
 
@@ -33,10 +33,9 @@ void	clean_shm_segment()
 		shmctl(g_lemipc.init_shm_id, IPC_RMID, NULL);
 		printf(KGRN "- Shared memory cleaned!\n" KRESET);
 	}
-
 }
 
-void	clean_semaphores()
+void	clean_semaphores(void)
 {
 	struct shmid_ds		buf;
 
@@ -48,7 +47,7 @@ void	clean_semaphores()
 	}
 }
 
-void	clean_msgq()
+void	clean_msgq(void)
 {
 	int					i;
 	int					msgq_id;

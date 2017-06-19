@@ -22,11 +22,13 @@ src/clean_memory.c \
 src/init_game.c \
 src/gameplay.c \
 src/target_management.c \
+src/target_management_2.c \
 src/team_management.c \
 src/init_display.c \
 src/init_players.c \
 src/board_tools.c \
 src/tools.c \
+src/tools_2.c \
 src/game_commands.c \
 src/game_checks.c \
 src/sem_handle.c \

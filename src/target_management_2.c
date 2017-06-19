@@ -1,35 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   target_management_2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aleung-c <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/06/08 16:03:48 by aleung-c          #+#    #+#             */
-/*   Updated: 2017/06/08 16:03:50 by aleung-c         ###   ########.fr       */
+/*   Created: 2017/06/19 19:12:14 by aleung-c          #+#    #+#             */
+/*   Updated: 2017/06/19 19:12:15 by aleung-c         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/lemipc.h"
 
-int		main(int argc, char **argv)
+void		parse_target_msg(char *msg, t_vec2 *ret)
 {
-	if (argc < 3)
-	{
-		ft_putendl(KRED "Usage: ./lemipc [nb_player_for_team] ..." KRESET);
-		exit(-1);
-	}
-	signal(SIGINT, sig_handler);
-	lemipc(argc, argv);
-	return (0);
-}
+	int		i;
+	int		msg_len;
 
-void	sig_handler(int signo)
-{
-	if (signo == SIGINT || signo == SIGSTOP || signo == SIGKILL)
+	i = 0;
+	msg_len = ft_strlen(msg);
+	while (i != msg_len)
 	{
-		end_display(&g_lemipc);
-		clean_all();
-		exit(-1);
+		if (msg[i] == ' ' && msg[i + 1])
+		{
+			if (ret->x == -1)
+				ret->x = ft_atoi(&msg[i + 1]);
+			else
+				ret->y = ft_atoi(&msg[i + 1]);
+		}
+		i++;
 	}
 }
