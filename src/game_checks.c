@@ -20,6 +20,8 @@
 **	-1 means out of board in the scooped points.
 */
 
+// TODO: check the border death bug... surely the -1 being counted as team...
+
 int			am_i_dead(t_lemipc *lemipc)
 {
 	int			points[9];
