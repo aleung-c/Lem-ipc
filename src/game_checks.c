@@ -72,7 +72,8 @@ int			check_values_around(t_lemipc *lemipc, int *points)
 		{
 			while (y != 9)
 			{
-				if (points[y] == points[i] && (y != i))
+				if (points[y] == points[i] && (y != i)
+					&& points[y] != 0 && points[y] != -1)
 					return (B_TRUE);
 				y++;
 			}

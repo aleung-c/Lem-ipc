@@ -32,7 +32,7 @@ void		init_display(t_lemipc *lemipc)
 }
 
 /*
-**	Main drawing function. Used in the ever running loop.
+**	Main drawing function. Used in the main loop.
 */
 
 void		display_game_board(t_lemipc *lemipc)

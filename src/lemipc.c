@@ -58,11 +58,17 @@ void	lemipc_main_loop(t_lemipc *lemipc)
 		{
 			if (lemipc->player.is_dead == 0)
 				play_turn(lemipc);
-			else if (lemipc->player.is_dead == 1
-				&& lemipc->is_parent == 0)
+			else if (lemipc->player.is_dead == 1)
 				break ;
 			if (is_game_over(lemipc) == B_TRUE)
 				break ;
+		}
+	}
+	if (lemipc->is_parent == 1)
+	{
+		while (*lemipc->game_started == 1)
+		{
+			display_game_board(lemipc);
 		}
 	}
 }
@@ -78,13 +84,16 @@ void	lemipc_on_end(t_lemipc *lemipc)
 	if (lemipc->is_parent == 1)
 	{
 		end_display(lemipc);
-	}
-	if (lemipc->winning_team != -1)
-	{
 		clear();
+	}
+	if (lemipc->winning_team != -1 && *lemipc->game_started == 1)
+	{
+		lock_semaphore(lemipc->sem_id, 1);
 		ft_putstr("Team #");
 		ft_putnbr(lemipc->winning_team);
-		ft_putendl(" won!");
+		ft_putendl(" won!");	
+		*lemipc->game_started = 0;
+		unlock_semaphore(lemipc->sem_id, 1);
 	}
 	clean_all();
 }
