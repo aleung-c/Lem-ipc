@@ -12,7 +12,7 @@
 
 #include "../includes/lemipc.h"
 
-char		*check_communications(t_lemipc *lemipc)
+t_message		*check_communications(t_lemipc *lemipc)
 {
 	t_message		*msg;
 	long			msg_type;
@@ -24,15 +24,18 @@ char		*check_communications(t_lemipc *lemipc)
 		(void *)msg, sizeof(msg->text),
 		msg_type, MSG_NOERROR | IPC_NOWAIT);
 	if (result == -1)
+	{
+		free(msg);
 		return (NULL);
-	return (&msg->text[0]);
+	}
+	return (msg);
 }
 
 /*
 **	concatenation of msg + target x + target y
 */
 
-void		call_team(t_lemipc *lemipc, t_vec2 target)
+void			call_team(t_lemipc *lemipc, t_vec2 target)
 {
 	char	msg[MSG_SIZE];
 	char	*player_nb_text;
@@ -57,7 +60,7 @@ void		call_team(t_lemipc *lemipc, t_vec2 target)
 	send_msg_to_team(lemipc, msg);
 }
 
-void		send_msg_to_team(t_lemipc *lemipc, char *msg_text)
+void			send_msg_to_team(t_lemipc *lemipc, char *msg_text)
 {
 	t_message		msg;
 	long			msg_type;

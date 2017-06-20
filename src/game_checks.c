@@ -20,8 +20,6 @@
 **	-1 means out of board in the scooped points.
 */
 
-// TODO: check the border death bug... surely the -1 being counted as team...
-
 int			am_i_dead(t_lemipc *lemipc)
 {
 	int			points[9];
@@ -85,8 +83,8 @@ int			check_values_around(t_lemipc *lemipc, int *points)
 }
 
 /*
-**	New way: ill check if there are enemy targets.
-**	If not, then we win.
+**	For the win check, Ill look for enemy targets.
+**	If there are none, then we win.
 */
 
 int			is_game_over(t_lemipc *lemipc)

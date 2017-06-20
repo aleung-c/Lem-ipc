@@ -29,6 +29,7 @@ void		init_display(t_lemipc *lemipc)
 		ft_putstr(KRED "Shellscreen too small! Resize please!\n" KRESET);
 		exit(-1);
 	}
+	noecho();
 }
 
 /*
@@ -64,6 +65,6 @@ void		display_game_board(t_lemipc *lemipc)
 
 void		end_display(t_lemipc *lemipc)
 {
-	delwin(lemipc->mainwin);
 	endwin();
+	delwin(lemipc->mainwin);
 }

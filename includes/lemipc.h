@@ -86,6 +86,13 @@ typedef enum				e_dir
 	LEFT
 }							t_dir;
 
+typedef enum				e_game_status
+{
+	GAME_INIT,
+	GAME_STARTED,
+	GAME_END
+}							t_game_status;
+
 /*
 ** ----- Program structs
 */
@@ -114,7 +121,7 @@ typedef struct				s_player
 
 	int						requesting_assistance;
 	int						assisting;
-	char					*cur_msg;
+	t_message				*cur_msg;
 }							t_player;
 
 typedef struct				s_lemipc
@@ -128,7 +135,7 @@ typedef struct				s_lemipc
 	int						*map;
 
 	int						init_shm_id;
-	int						*game_started;
+	int						*game_status;
 
 	int						sem_id;
 
@@ -226,7 +233,7 @@ void						after_move_behavior(t_lemipc *lemipc);
 **	Team Management
 */
 
-char						*check_communications(t_lemipc *lemipc);
+t_message					*check_communications(t_lemipc *lemipc);
 void						call_team(t_lemipc *lemipc, t_vec2 target);
 void						send_msg_to_team(t_lemipc *lemipc, char *msg_text);
 

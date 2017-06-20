@@ -49,10 +49,11 @@ void		check_for_team_comms(t_lemipc *lemipc)
 	if (lemipc->player.cur_msg)
 	{
 		lemipc->player.target_pos = set_target_from_msg(lemipc,
-			lemipc->player.cur_msg);
+			lemipc->player.cur_msg->text);
 		if (lemipc->player.target_pos.x != -1)
 		{
 			lemipc->player.assisting = 1;
+			free(lemipc->player.cur_msg);
 			lemipc->player.cur_msg = NULL;
 		}
 	}

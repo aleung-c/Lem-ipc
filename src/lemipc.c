@@ -41,8 +41,6 @@ void	lemipc_init(int argc, char **argv)
 		init_display(&g_lemipc);
 }
 
-// TODO: When player 1 1 dies, display is taken off....
-
 /*
 **	The main loop for the program. Start when everything is
 **	initialized and ready to roll.
@@ -54,22 +52,24 @@ void	lemipc_main_loop(t_lemipc *lemipc)
 	{
 		if (lemipc->is_parent == 1)
 			display_game_board(lemipc);
-		if (*lemipc->game_started == 1)
+		if (*lemipc->game_status == GAME_STARTED)
 		{
 			if (lemipc->player.is_dead == 0)
 				play_turn(lemipc);
-			else if (lemipc->player.is_dead == 1)
+			else
 				break ;
 			if (is_game_over(lemipc) == B_TRUE)
 				break ;
+			if (lemipc->winning_team != -1)
+				break ;
 		}
+		if (*lemipc->game_status == GAME_END)
+			break ;
 	}
 	if (lemipc->is_parent == 1)
 	{
-		while (*lemipc->game_started == 1)
-		{
+		while (*lemipc->game_status != GAME_END)
 			display_game_board(lemipc);
-		}
 	}
 }
 
@@ -84,15 +84,15 @@ void	lemipc_on_end(t_lemipc *lemipc)
 	if (lemipc->is_parent == 1)
 	{
 		end_display(lemipc);
-		clear();
 	}
-	if (lemipc->winning_team != -1 && *lemipc->game_started == 1)
+	if (g_lemipc.winning_team != -1)
 	{
+		clear();
 		lock_semaphore(lemipc->sem_id, 1);
-		ft_putstr("Team #");
+		*lemipc->game_status = GAME_END;
+		ft_putstr(KYEL "Team #");
 		ft_putnbr(lemipc->winning_team);
-		ft_putendl(" won!");	
-		*lemipc->game_started = 0;
+		ft_putendl(" won!" KRESET);
 		unlock_semaphore(lemipc->sem_id, 1);
 	}
 	clean_all();

@@ -48,7 +48,7 @@ void		init_shm_segment_flag(t_lemipc *lemipc)
 		clean_all();
 		exit(1);
 	}
-	if ((lemipc->game_started = shmat(lemipc->init_shm_id, NULL, 0))
+	if ((lemipc->game_status = shmat(lemipc->init_shm_id, NULL, 0))
 		== (int *)-1)
 	{
 		perror("init_board: shmat");

@@ -76,7 +76,9 @@ void		init_cur_player(t_lemipc *lemipc, int team, int nb)
 	unlock_semaphore(lemipc->sem_id, 1);
 	if (team == lemipc->nb_team
 			&& nb == lemipc->nb_player_per_team[lemipc->nb_team - 1])
-		*lemipc->game_started = 1;
+	{
+		*lemipc->game_status = GAME_STARTED;
+	}
 	add_delay_time(lemipc);
 }
 
@@ -88,7 +90,7 @@ t_vec2		set_player_spawn_position(t_lemipc *lemipc)
 	spawn_pos.y = rand() % BOARD_HEIGHT;
 	while (get_board_value(lemipc->map, spawn_pos.x, spawn_pos.y) != 0)
 	{
-		spawn_pos.x += 2;
+		spawn_pos.x += 1;
 		if (spawn_pos.x >= BOARD_WIDTH)
 		{
 			spawn_pos.x = 0;
