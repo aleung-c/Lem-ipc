@@ -176,6 +176,7 @@ void						lemipc_on_end(t_lemipc *lemipc);
 void						get_game_args(t_lemipc *lemipc, int argc,
 								char **argv);
 int							check_game_args(t_lemipc *lemipc);
+int							check_game_args_2(t_lemipc *lemipc);
 
 void						init_game(t_lemipc *lemipc);
 void						clear_map(int *map);

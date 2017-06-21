@@ -67,5 +67,21 @@ int		check_game_args(t_lemipc *lemipc)
 		ft_putendl(KRED "Error: One team should have two players" KRESET);
 		return (-1);
 	}
+	return (check_game_args_2(lemipc));
+}
+
+int		check_game_args_2(t_lemipc *lemipc)
+{
+	(void)lemipc;
+	if (BOARD_HEIGHT <= 0 || BOARD_WIDTH <= 0)
+	{
+		ft_putendl(KRED "Error: Invalid board size" KRESET);
+		return (-1);
+	}
+	if (MS_TURN_DELAY < 0)
+	{
+		ft_putendl(KRED "Error: Invalid delay time value" KRESET);
+		return (-1);
+	}
 	return (0);
 }
