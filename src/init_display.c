@@ -17,6 +17,7 @@ void		init_display(t_lemipc *lemipc)
 	if ((lemipc->mainwin = initscr()) == NULL)
 	{
 		perror("ncurses");
+		clean_all();
 		exit(-1);
 	}
 	noecho();
