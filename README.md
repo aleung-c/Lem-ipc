@@ -17,6 +17,7 @@ There is no rule to decide when it is a player's turn, the first one to access t
 the one who will play.
 
 Example output:
+
 ![Alt text](./screens/lem_ipc_1.png "Lem-ipc screenshot 1")
 
 ![Alt text](./screens/lem_ipc_2.png "Lem-ipc screenshot 2")
