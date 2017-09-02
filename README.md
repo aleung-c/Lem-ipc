@@ -16,7 +16,7 @@ This means all players do not play in order. They play when they manage to acces
 There is no rule to decide when it is a player's turn, the first one to access the board through the system's task scheduler is
 the one who will play.
 
-Example output:
+Example outputs:
 
 ![Alt text](./screens/lem_ipc_1.png "Lem-ipc screenshot 1")
 
