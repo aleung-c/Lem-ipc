@@ -21,5 +21,3 @@ Example output:
 ![Alt text](./screens/lem_ipc_1.png "Lem-ipc screenshot 1")
 
 ![Alt text](./screens/lem_ipc_2.png "Lem-ipc screenshot 2")
-
-![Alt text](./screens/lem_ipc_3.png "Lem-ipc screenshot 3")
